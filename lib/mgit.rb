@@ -6,9 +6,7 @@ require 'mgit/repository'
 
 require 'mgit/cli'
 require 'mgit/command'
-require 'mgit/commands/add'
-require 'mgit/commands/list'
-require 'mgit/commands/status'
+Dir["#{File.expand_path('../mgit/commands', __FILE__)}/*.rb"].each { |file| require file }
 
 module MGit
 end
