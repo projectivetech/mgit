@@ -8,7 +8,7 @@ module MGit
       if c
         c.new
       else
-        raise UnknownCommandError
+        raise UnknownCommandError.new(cmd)
       end
     end
 
@@ -18,6 +18,10 @@ module MGit
 
     def self.register_alias(cmd)
       @@aliases[cmd] = self
+    end
+
+    def self.list
+      '[' + @@commands.keys.join(', ') + ']'
     end
   end
 end
