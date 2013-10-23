@@ -10,6 +10,14 @@ module MGit
       self.all.each(&block)
     end
 
+    def self.chdir_each
+      self.all.each do |name, path|
+        Dir.chdir(path) do
+          yield name, path
+        end
+      end
+    end
+
     def self.add(name, path)
       repos = self.all
       repos[name] = path
