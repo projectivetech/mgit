@@ -27,19 +27,19 @@ module MGit
       status.each do |s|
         case s.split[0]
         when 'A'
-          flags << 'Index'
+          flags << 'Index'.red
         when 'M'
-          flags << 'Dirty'
+          flags << 'Dirty'.red
         when '??'
-          flags << 'Untracked'
+          flags << 'Untracked'.yellow
         when '##'
           if(m = /## (\w+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/.match(s))
-            flags << "#{m[3].capitalize} #{m[2]} by #{m[4]}"
+            flags << "#{m[3].capitalize} #{m[2]} by #{m[4]}".blue
           end
         end
       end
 
-      flags
+      flags.empty? ? ['Clean'.green] : flags
     end
   end
 end

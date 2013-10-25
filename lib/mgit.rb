@@ -1,3 +1,4 @@
+require 'colorize'
 require 'highline/import'
 
 require 'mgit/version'
