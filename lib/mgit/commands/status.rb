@@ -33,8 +33,8 @@ module MGit
         when '??'
           flags << 'Untracked'.yellow
         when '##'
-          if(m = /## (\w+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/.match(s))
-            flags << "#{m[3].capitalize} #{m[2]} by #{m[4]}".blue
+          if(m = /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/.match(s))
+            flags << "#{m[3].capitalize} of #{m[2]} by #{m[4]}".blue
           end
         end
       end
