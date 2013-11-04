@@ -12,6 +12,10 @@ module MGit
       'list'
     end
 
+    def description
+      'list all repositories'
+    end
+
     register_command :list
     register_alias :ls
   end

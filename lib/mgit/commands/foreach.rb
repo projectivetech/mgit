@@ -17,6 +17,10 @@ module MGit
       'foreach <command...>'
     end
 
+    def description
+      'execute a command for each repository'
+    end
+
     register_command :foreach
   end
 end

@@ -15,6 +15,10 @@ module MGit
       'fetch'
     end
 
+    def description
+      'fetch all remote repositories'
+    end
+
     register_command :fetch
   end
 end

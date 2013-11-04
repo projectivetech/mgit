@@ -16,6 +16,10 @@ module MGit
       'status'
     end
 
+    def description
+      'display status for each repositories'
+    end
+
     register_command :status
     register_alias :st
 

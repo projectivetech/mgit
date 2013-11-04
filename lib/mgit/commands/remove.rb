@@ -21,6 +21,10 @@ module MGit
       'remove <name/path>'
     end
 
+    def description
+      'remove a repository'
+    end
+
     register_command :remove
     register_alias :rm
   end
