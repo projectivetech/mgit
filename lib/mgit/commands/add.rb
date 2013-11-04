@@ -16,6 +16,10 @@ module MGit
       'add <path_to_git_repository> [name]'
     end
 
+    def description
+      'add a repository to mgit'
+    end
+
     register_command :add
 
   private

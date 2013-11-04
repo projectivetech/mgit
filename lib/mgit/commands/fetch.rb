@@ -5,7 +5,7 @@ module MGit
 
       Repository.chdir_each do |name, path|
         `git remote`.split.each do |remote|
-          puts "Fetching #{remote} in repository #{name}..."
+          puts "Fetching #{remote} in repository #{name}...".yellow
           `git fetch #{remote}`
         end
       end
@@ -13,6 +13,10 @@ module MGit
 
     def usage
       'fetch'
+    end
+
+    def description
+      'fetch all remote repositories'
     end
 
     register_command :fetch
