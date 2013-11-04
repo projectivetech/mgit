@@ -18,16 +18,30 @@ module MGit
       end
     end
 
+    def self.find(&block)
+      self.all.find(&block)
+    end
+
     def self.add(name, path)
       repos = self.all
       repos[name] = path
-      File.open(self.repofile, 'w') { |fd| fd.write repos.to_yaml }
+      self.save! repos
+    end
+
+    def self.remove(name)
+      repos = self.all
+      repos.delete name
+      self.save! repos
     end
 
   private
 
     def self.repofile
       File.join(Dir.home, '.config/mgit.yml')
+    end
+
+    def self.save!(repos)
+      File.open(self.repofile, 'w') { |fd| fd.write repos.to_yaml }
     end
   end
 end
