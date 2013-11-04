@@ -17,5 +17,6 @@ Gem::Specification.new do |s|
   s.files         = Dir.glob('lib/**/*.rb')
   s.executables   = ['mgit']
 
+  s.add_dependency 'colorize'
   s.add_dependency 'highline'
 end
