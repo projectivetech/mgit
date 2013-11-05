@@ -9,6 +9,10 @@ module MGit
       @path = path
     end
 
+    def dirty?
+      [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
+    end
+
     def flags
       flags = Set.new
       status_lines do |s|

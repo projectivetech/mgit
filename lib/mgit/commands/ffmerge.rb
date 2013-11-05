@@ -3,18 +3,21 @@ module MGit
     def execute(args)
       raise TooManyArgumentsError.new(self) if args.size != 0
 
-      Repository.chdir_each do |name, path|
-        if dirty?
-          puts "Skipping repository #{name} since its "
+      Registry.chdir_each do |repo|
+        if repo.dirty?
+          puts "Skipping repository #{repo.name} since it's dirty.".red
+          next
+        end 
+
+        puts "Fast-forward merging branches in repository #{repo.name}...".yellow
 
         tb = tracking_branches
         cb = current_branch
-
         tb.each do |b|
-          `git checkout 
-        puts "Looking for pattern '#{ptrn}' in repository #{name}...".yellow
-        puts `git grep #{ptrn}`
-        puts
+          `git checkout -q #{b}`
+          `git merge --ff-only @{u}`
+        end
+        `git checkout -q #{cb}`
       end
     end
 
