@@ -6,8 +6,8 @@ module MGit
 
       ptrn = args[0]
 
-      repo = Registry.find do |name, path|
-        name == ptrn || path == File.expand_path(ptrn)
+      repo = Registry.find do |repo|
+        repo.name == ptrn || repo.path == File.expand_path(ptrn)
       end
       
       raise CommandUsageError.new("Couldn't find repository matching '#{ptrn}'.", self) unless repo

@@ -5,9 +5,9 @@ module MGit
 
       command = args.join(' ')
 
-      Registry.chdir_each do |name, path|
-        puts "Executing command in repository #{name}...".yellow
-        if !system(command) && !ask("Executing command '#{command}' in repository '#{name}' failed. Would you like to continue anyway?".red)
+      Registry.chdir_each do |repo|
+        puts "Executing command in repository #{repo.name}...".yellow
+        if !system(command) && !ask("Executing command '#{command}' in repository '#{repo.name}' failed. Would you like to continue anyway?".red)
           break
         end
       end

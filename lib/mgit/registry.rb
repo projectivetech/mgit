@@ -3,7 +3,7 @@ require 'yaml'
 module MGit
   module Registry
     def self.all
-      File.exists?(self.repofile) ? YAML.load_file(self.repofile) : {}
+      self.load.map { |name, path| Repository.new(name, path) }
     end
 
     def self.each(&block)
@@ -11,9 +11,9 @@ module MGit
     end
 
     def self.chdir_each
-      self.all.each do |name, path|
-        Dir.chdir(path) do
-          yield name, path
+      self.all.each do |repo|
+        Dir.chdir(repo.path) do
+          yield repo
         end
       end
     end
@@ -23,13 +23,13 @@ module MGit
     end
 
     def self.add(name, path)
-      repos = self.all
+      repos = self.load
       repos[name] = path
       self.save! repos
     end
 
     def self.remove(name)
-      repos = self.all
+      repos = self.load
       repos.delete name
       self.save! repos
     end
@@ -38,6 +38,10 @@ module MGit
 
     def self.repofile
       File.join(Dir.home, '.config/mgit.yml')
+    end
+
+    def self.load
+      File.exists?(self.repofile) ? YAML.load_file(self.repofile) : {}
     end
 
     def self.save!(repos)
