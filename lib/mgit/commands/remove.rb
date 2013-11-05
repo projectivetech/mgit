@@ -6,7 +6,7 @@ module MGit
 
       ptrn = args[0]
 
-      repo = Repository.find do |name, path|
+      repo = Registry.find do |name, path|
         name == ptrn || path == File.expand_path(ptrn)
       end
       

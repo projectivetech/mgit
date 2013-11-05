@@ -1,7 +1,7 @@
 require 'yaml'
 
 module MGit
-  module Repository
+  module Registry
     def self.all
       File.exists?(self.repofile) ? YAML.load_file(self.repofile) : {}
     end

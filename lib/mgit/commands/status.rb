@@ -5,7 +5,7 @@ module MGit
     def execute(args)
       raise TooManyArgumentsError.new(self) if args.size != 0
 
-      Repository.chdir_each do |name, path|
+      Registry.chdir_each do |name, path|
         nc = 36
         display = (name.size > nc) ? (name[0..(nc - 3)] + '...') : name.ljust(nc, ' ')
         puts "#{display} => [#{flags.to_a.join(', ')}]"

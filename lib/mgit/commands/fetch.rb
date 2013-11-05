@@ -3,7 +3,7 @@ module MGit
     def execute(args)
       raise TooManyArgumentsError.new(self) if args.size != 0
 
-      Repository.chdir_each do |name, path|
+      Registry.chdir_each do |name, path|
         `git remote`.split.each do |remote|
           puts "Fetching #{remote} in repository #{name}...".yellow
           `git fetch #{remote}`
