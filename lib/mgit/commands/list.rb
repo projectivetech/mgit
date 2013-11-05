@@ -3,8 +3,8 @@ module MGit
     def execute(args)
       raise TooManyArgumentsError.new(self) if args.size != 0
 
-      Repository.each do |name, path|
-        puts "#{name} => #{path}"
+      Registry.each do |repo|
+        puts "#{repo.name} => #{repo.path}"
       end
     end
 

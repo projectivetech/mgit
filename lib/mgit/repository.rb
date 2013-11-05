@@ -1,47 +1,60 @@
-require 'yaml'
+require 'set'
 
 module MGit
-  module Repository
-    def self.all
-      File.exists?(self.repofile) ? YAML.load_file(self.repofile) : {}
+  class Repository
+    attr_reader :name, :path
+
+    def initialize(name, path)
+      @name = name
+      @path = path
     end
 
-    def self.each(&block)
-      self.all.each(&block)
+    def dirty?
+      [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
     end
 
-    def self.chdir_each
-      self.all.each do |name, path|
-        Dir.chdir(path) do
-          yield name, path
+    def flags
+      flags = Set.new
+      status_lines do |s|
+        case s.split[0]
+        when 'A'
+          flags << :index
+        when 'M'
+          flags << :dirty
+        when '??'
+          flags << :untracked
+        when '##'
+          flags << :diverged
         end
       end
+      flags
     end
 
-    def self.find(&block)
-      self.all.find(&block)
-    end
-
-    def self.add(name, path)
-      repos = self.all
-      repos[name] = path
-      self.save! repos
-    end
-
-    def self.remove(name)
-      repos = self.all
-      repos.delete name
-      self.save! repos
+    def divergence
+      divergence = []
+      status_lines do |s|
+        if s.split[0] == '##'
+          if(m = /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/.match(s))
+            if m[3] =~ /behind/
+              divergence << { :behind => { :branch => m[2], :by => m[4] } }
+            else
+              divergence << { :ahead => { :branch => m[2], :by => m[4] } }
+            end
+          end
+        end
+      end
+      divergence
     end
 
   private
-
-    def self.repofile
-      File.join(Dir.home, '.config/mgit.yml')
-    end
-
-    def self.save!(repos)
-      File.open(self.repofile, 'w') { |fd| fd.write repos.to_yaml }
+  
+    def status_lines
+      Dir.chdir(path) do
+        status = `git status --short --branch --ignore-submodules`.split("\n")
+        status.each do |s|
+          yield s
+        end
+      end
     end
   end
 end
