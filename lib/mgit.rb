@@ -3,6 +3,7 @@ require 'highline/import'
 
 require 'mgit/version'
 require 'mgit/exceptions'
+require 'mgit/registry'
 require 'mgit/repository'
 
 require 'mgit/cli'

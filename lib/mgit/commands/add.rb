@@ -9,7 +9,7 @@ module MGit
 
       name = (args.size == 2) ? args[1] : (ask('Name of the repository? ') { |q| q.default = File.basename(path) })
 
-      Repository.add(name, path)
+      Registry.add(name, path)
     end
 
     def usage

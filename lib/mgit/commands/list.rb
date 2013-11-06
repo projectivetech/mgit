@@ -3,8 +3,10 @@ module MGit
     def execute(args)
       raise TooManyArgumentsError.new(self) if args.size != 0
 
-      Repository.each do |name, path|
-        puts "#{name} => #{path}"
+      Registry.each do |repo|
+        nc = 24
+        display = (repo.name.size > nc) ? (repo.name[0..(nc - 3)] + '...') : repo.name.ljust(nc, ' ')
+        puts "#{display} => #{repo.path}"
       end
     end
 
