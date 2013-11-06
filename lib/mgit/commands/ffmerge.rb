@@ -33,10 +33,6 @@ module MGit
 
   private
 
-    def dirty?
-      `git diff --shortstat | tail -n 1` != ''
-    end
-
     def tracking_branches
       `git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads`.
         split("\n").
