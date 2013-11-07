@@ -16,7 +16,7 @@ describe 'status command' do
     end
   end
 
-  context 'with an untracked repository' do
+  context 'with an untracked file' do
     include_context 'managed_repository', :untracked
 
     it 'reports untracked' do
@@ -31,6 +31,24 @@ describe 'status command' do
     it 'reports dirty' do
       command.execute([])
       expect(@stdout.string).to match(/Dirty/)
+    end
+  end
+
+  context 'in detached HEAD state' do
+    include_context 'managed_repository', :detached
+
+    it 'reports detached' do
+      command.execute([])
+      expect(@stdout.string).to match(/Detached/)
+    end
+  end
+
+  context 'with an indexed file' do
+    include_context 'managed_repository', :index
+
+    it 'reports index' do
+      command.execute([])
+      expect(@stdout.string).to match(/Index/)
     end
   end
 end
