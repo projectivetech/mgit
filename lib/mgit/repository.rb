@@ -24,7 +24,11 @@ module MGit
         when '??'
           flags << :untracked
         when '##'
-          flags << :diverged
+          if /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/ =~ s
+            flags << :diverged
+          elsif /## HEAD \(no branch\)/ =~ s
+            flags << :detached
+          end
         end
       end
       flags
