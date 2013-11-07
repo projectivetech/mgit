@@ -12,9 +12,8 @@ module MGit
       
       raise CommandUsageError.new("Couldn't find repository matching '#{ptrn}'.", self) unless repo
 
-      name = repo[0]
-      Repository.remove(name)
-      puts "Removed repository #{name}.".yellow
+      Registry.remove(repo.name)
+      puts "Removed repository #{repo.name}.".yellow
     end
 
     def usage
