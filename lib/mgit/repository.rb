@@ -48,9 +48,12 @@ module MGit
 
   private
   
+    def status
+      @status ||= `git status --short --branch --ignore-submodules`.split("\n") 
+    end
+
     def status_lines
       Dir.chdir(path) do
-        status = `git status --short --branch --ignore-submodules`.split("\n")
         status.each do |s|
           yield s
         end
