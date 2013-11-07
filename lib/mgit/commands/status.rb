@@ -32,6 +32,7 @@ module MGit
       flags << 'Index'.red if fs.include?(:index)
       flags << 'Dirty'.red if fs.include?(:dirty)
       flags << 'Untracked'.yellow if fs.include?(:untracked)
+      flags << 'Detached'.yellow if fs.include?(:detached)
 
       if fs.include?(:diverged)
         ds = repo.divergence

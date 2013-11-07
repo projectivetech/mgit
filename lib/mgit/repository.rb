@@ -24,7 +24,11 @@ module MGit
         when '??'
           flags << :untracked
         when '##'
-          flags << :diverged
+          if /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/ =~ s
+            flags << :diverged
+          elsif /## HEAD \(no branch\)/ =~ s
+            flags << :detached
+          end
         end
       end
       flags
@@ -48,9 +52,12 @@ module MGit
 
   private
   
+    def status
+      @status ||= `git status --short --branch --ignore-submodules`.split("\n") 
+    end
+
     def status_lines
       Dir.chdir(path) do
-        status = `git status --short --branch --ignore-submodules`.split("\n")
         status.each do |s|
           yield s
         end
