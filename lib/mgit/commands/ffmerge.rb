@@ -11,9 +11,8 @@ module MGit
 
         puts "Fast-forward merging branches in repository #{repo.name}...".yellow
 
-        tb = tracking_branches
-        cb = current_branch
-        tb.each do |b|
+        cb = repo.current_branch
+        repo.remote_tracking_branches.each do |b, u|
           `git checkout -q #{b}`
           `git merge --ff-only @{u}`
         end
@@ -30,19 +29,5 @@ module MGit
     end
 
     register_command :ffmerge
-
-  private
-
-    def tracking_branches
-      `git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads`.
-        split("\n").
-        map { |b| b.split(' ') }.
-        reject { |b| b.size != 2 }.
-        map(&:first)
-    end
-
-    def current_branch
-      `git rev-parse --abbrev-ref HEAD`
-    end
   end
 end
