@@ -9,8 +9,19 @@ module MGit
       @path = path
     end
 
-    def dirty?
-      [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
+    def current_branch
+      in_repo { `git rev-parse --abbrev-ref HEAD` }
+    end
+
+    def remote_tracking_branches
+      a = in_repo do
+        `git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads`.
+          split("\n").
+          map { |b| b.split(' ') }.
+          reject { |b| b.size != 2 }
+      end
+      
+      Hash[a]
     end
 
     def flags
@@ -50,18 +61,22 @@ module MGit
       divergence
     end
 
+    def dirty?
+      [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
+    end
+
   private
   
+    def in_repo
+      Dir.chdir(path) { yield }
+    end
+
     def status
-      @status ||= `git status --short --branch --ignore-submodules`.split("\n") 
+      @status ||= in_repo { `git status --short --branch --ignore-submodules`.split("\n") }
     end
 
     def status_lines
-      Dir.chdir(path) do
-        status.each do |s|
-          yield s
-        end
-      end
+      status.each { |s| yield s }
     end
   end
 end

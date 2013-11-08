@@ -1,5 +1,7 @@
 # mgit - meta git repository tracker
 
+[![Code Climate](https://codeclimate.com/github/FlavourSys/mgit.png)](https://codeclimate.com/github/FlavourSys/mgit)
+
 mgit let's you track all your git repositories at once. It is inspired by [App::GitGot](https://github.com/genehack/app-gitgot).
 
 ## Getting started

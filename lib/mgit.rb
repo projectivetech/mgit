@@ -1,5 +1,6 @@
 require 'colorize'
 require 'highline/import'
+require 'xdg'
 
 require 'mgit/version'
 require 'mgit/exceptions'
