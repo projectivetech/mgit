@@ -15,6 +15,10 @@ module MGit
       end
     end
 
+    def arity
+      [nil, 0]
+    end
+
     def usage
       'log'
     end
