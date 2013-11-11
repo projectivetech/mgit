@@ -6,11 +6,11 @@ module MGit
           uc = unmerged_commits(branch, upstream)
           next if uc.empty?
 
-          puts "In repository #{repo.name}, branch #{upstream} the following commits were made:".yellow
-          longest_name = uc.map { |c| c[:author].size }.max
-          uc.each do |c|
-            puts "#{c[:commit]}  #{c[:author].ljust(longest_name, ' ')}  #{c[:subject]}"
-          end
+          pinfo "In repository #{repo.name}, branch #{upstream} the following commits were made:"
+          
+          t = []
+          uc.each { |c| t << [c[:commit], c[:author], c[:subject]] }
+          ptable t
         end
       end
     end

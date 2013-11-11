@@ -1,5 +1,7 @@
 module MGit
   class Command
+    include Output
+
     @@commands = {}
     @@aliases = {}
 
@@ -31,20 +33,10 @@ module MGit
       end
     end
 
-    def arity
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the arity method.")
-    end
-
-    def usage
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the usage method.")
-    end
-
-    def help
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the help method.")
-    end
-
-    def description
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the description method.")
+    [:arity, :usage, :help, :description].each do |meth|
+      define_method(meth) do
+        raise ImplementationError.new("Command #{self.class.name} doesn't implement the #{meth.to_s} method.")
+      end
     end
 
   private

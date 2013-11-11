@@ -3,11 +3,11 @@ module MGit
     def execute(args)
       Registry.chdir_each do |repo|
         if repo.dirty?
-          puts "Skipping repository #{repo.name} since it's dirty.".red
+          pwarn "Skipping repository #{repo.name} since it's dirty."
           next
         end 
 
-        puts "Fast-forward merging branches in repository #{repo.name}...".yellow
+        pinfo "Fast-forward merging branches in repository #{repo.name}..."
 
         cb = repo.current_branch
         repo.remote_tracking_branches.each do |b, u|

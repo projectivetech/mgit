@@ -3,7 +3,7 @@ module MGit
     def execute(args)
       Registry.chdir_each do |repo|
         `git remote`.split.each do |remote|
-          puts "Fetching #{remote} in repository #{repo.name}...".yellow
+          pinfo "Fetching #{remote} in repository #{repo.name}..."
           `git fetch #{remote}`
         end
       end

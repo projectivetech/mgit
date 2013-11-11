@@ -5,7 +5,6 @@ module MGit
       raise GitError.new('Clone command failed.') if $?.exitstatus != 0
 
       m = /Cloning into '(.*)'/.match(log.split("\n").first)
-      puts m[1]
       Command.execute('add', [m[1]])
     end
 
