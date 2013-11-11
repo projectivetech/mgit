@@ -1,7 +1,7 @@
 module MGit
   class VersionCommand < Command
     def execute(args)
-      puts "mgit version #{MGit::VERSION}"
+      pinfo "mgit version #{MGit::VERSION}"
     end
 
     def arity

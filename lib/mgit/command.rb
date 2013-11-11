@@ -1,5 +1,7 @@
 module MGit
   class Command
+    include Output
+
     @@commands = {}
     @@aliases = {}
 

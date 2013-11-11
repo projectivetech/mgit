@@ -4,7 +4,7 @@ module MGit
       ptrn = args[0]
 
       Registry.chdir_each do |repo|
-        puts "Looking for pattern '#{ptrn}' in repository #{repo.name}...".yellow
+        pinfo "Looking for pattern '#{ptrn}' in repository #{repo.name}..."
         puts `git grep #{ptrn}`
         puts
       end
