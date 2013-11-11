@@ -1,8 +1,6 @@
 module MGit
   class ForEachCommand < Command
     def execute(args)
-      raise TooFewArgumentsError.new(self) if args.size == 0
-
       command = args.join(' ')
 
       Registry.chdir_each do |repo|
@@ -11,6 +9,10 @@ module MGit
           break
         end
       end
+    end
+
+    def arity
+      [1, nil]
     end
 
     def usage

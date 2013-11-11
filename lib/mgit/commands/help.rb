@@ -1,8 +1,6 @@
 module MGit
   class HelpCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size > 1
-
       if args.size == 0
         puts "M[eta]Git - manage multiple git repositories at the same time"
         puts
@@ -13,6 +11,10 @@ module MGit
       else
         puts Command.create(args[0]).help
       end
+    end
+
+    def arity
+      [0, 1]
     end
 
     def usage

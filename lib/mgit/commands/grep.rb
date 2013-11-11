@@ -1,9 +1,6 @@
 module MGit
   class GrepCommand < Command
     def execute(args)
-      raise TooFewArgumentsError.new(self) if args.size == 0
-      raise TooManyArgumentsError.new(self) if args.size > 1
-
       ptrn = args[0]
 
       Registry.chdir_each do |repo|
@@ -11,6 +8,10 @@ module MGit
         puts `git grep #{ptrn}`
         puts
       end
+    end
+
+    def arity
+      [1, 1]
     end
 
     def usage

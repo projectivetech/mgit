@@ -1,14 +1,16 @@
 module MGit
   class FetchCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size != 0
-
       Registry.chdir_each do |repo|
         `git remote`.split.each do |remote|
           puts "Fetching #{remote} in repository #{repo.name}...".yellow
           `git fetch #{remote}`
         end
       end
+    end
+
+    def arity
+      [nil, 0]
     end
 
     def usage

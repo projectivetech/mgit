@@ -1,8 +1,6 @@
 module MGit
   class FFMergeCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size != 0
-
       Registry.chdir_each do |repo|
         if repo.dirty?
           puts "Skipping repository #{repo.name} since it's dirty.".red
@@ -18,6 +16,10 @@ module MGit
         end
         `git checkout -q #{cb}`
       end
+    end
+
+    def arity
+      [nil, 0]
     end
 
     def usage
