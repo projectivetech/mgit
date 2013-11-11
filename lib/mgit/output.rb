@@ -4,11 +4,11 @@ module MGit
       puts s.green
     end
 
-    def pwarn
+    def pwarn(s)
       puts s.yellow
     end
 
-    def perror
+    def perror(s)
       puts s.red
     end
 
