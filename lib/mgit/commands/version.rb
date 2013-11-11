@@ -1,8 +1,11 @@
 module MGit
   class VersionCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size != 0
-      puts "mgit version #{MGit::VERSION}"
+      pinfo "mgit version #{MGit::VERSION}"
+    end
+
+    def arity
+      [nil, 0]
     end
 
     def usage

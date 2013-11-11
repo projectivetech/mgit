@@ -1,9 +1,6 @@
 module MGit
   class RemoveCommand < Command
     def execute(args)
-      raise TooFewArgumentsError.new(self) if args.size == 0
-      raise TooManyArgumentsError.new(self) if args.size > 1
-
       ptrn = args[0]
 
       repo = Registry.find do |repo|
@@ -13,7 +10,11 @@ module MGit
       raise CommandUsageError.new("Couldn't find repository matching '#{ptrn}'.", self) unless repo
 
       Registry.remove(repo.name)
-      puts "Removed repository #{repo.name}.".yellow
+      pinfo "Removed repository #{repo.name}."
+    end
+
+    def arity
+      [1, 1]
     end
 
     def usage

@@ -1,13 +1,13 @@
 module MGit
   class ListCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size != 0
+      t = []
+      Registry.each { |repo| t << [repo.name, repo.path] }
+      ptable t, :columns => [24, nil]
+    end
 
-      Registry.each do |repo|
-        nc = 24
-        display = (repo.name.size > nc) ? (repo.name[0..(nc - 3)] + '...') : repo.name.ljust(nc, ' ')
-        puts "#{display} => #{repo.path}"
-      end
+    def arity
+      [nil, 0]
     end
 
     def usage

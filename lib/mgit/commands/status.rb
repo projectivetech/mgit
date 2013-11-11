@@ -3,13 +3,13 @@ require 'set'
 module MGit
   class StatusCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size != 0
+      t = []
+      Registry.chdir_each { |repo| t << [repo.name, flags(repo).to_a.join(', ')] }
+      ptable t, :columns => [24, nil]
+    end
 
-      Registry.chdir_each do |repo|
-        nc = 36
-        display = (repo.name.size > nc) ? (repo.name[0..(nc - 3)] + '...') : repo.name.ljust(nc, ' ')
-        puts "#{display} => [#{flags(repo).to_a.join(', ')}]"
-      end
+    def arity
+      [nil, 0]
     end
 
     def usage

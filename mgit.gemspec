@@ -5,7 +5,6 @@ Gem::Specification.new do |s|
   s.name          = 'mgit'
   s.version       = MGit::VERSION
   s.license       = 'MIT'
-  s.date          = '2013-10-21'
   s.summary       = 'MGit meta repository tool'
   s.description   = 'M[eta]Git let\'s you manage multiple git repositories simultaneously'
 
@@ -19,5 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'colorize'
   s.add_dependency 'highline'
+  s.add_dependency 'xdg'
+
   s.add_development_dependency 'rspec'
 end

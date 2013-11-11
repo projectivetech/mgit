@@ -1,6 +1,16 @@
 module MGit
   class ImplementationError < StandardError; end
 
+  class GitError < StandardError
+    def initialize(error)
+      @error = error
+    end
+
+    def to_s
+      "Git error: #{@error}"
+    end
+  end
+
   class UsageError < StandardError
     def initialize(error, usage)
       @error = error

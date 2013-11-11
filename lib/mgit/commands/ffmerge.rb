@@ -1,24 +1,25 @@
 module MGit
   class FFMergeCommand < Command
     def execute(args)
-      raise TooManyArgumentsError.new(self) if args.size != 0
-
       Registry.chdir_each do |repo|
         if repo.dirty?
-          puts "Skipping repository #{repo.name} since it's dirty.".red
+          pwarn "Skipping repository #{repo.name} since it's dirty."
           next
         end 
 
-        puts "Fast-forward merging branches in repository #{repo.name}...".yellow
+        pinfo "Fast-forward merging branches in repository #{repo.name}..."
 
-        tb = tracking_branches
-        cb = current_branch
-        tb.each do |b|
+        cb = repo.current_branch
+        repo.remote_tracking_branches.each do |b, u|
           `git checkout -q #{b}`
           `git merge --ff-only @{u}`
         end
         `git checkout -q #{cb}`
       end
+    end
+
+    def arity
+      [nil, 0]
     end
 
     def usage
@@ -30,19 +31,5 @@ module MGit
     end
 
     register_command :ffmerge
-
-  private
-
-    def tracking_branches
-      `git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads`.
-        split("\n").
-        map { |b| b.split(' ') }.
-        reject { |b| b.size != 2 }.
-        map(&:first)
-    end
-
-    def current_branch
-      `git rev-parse --abbrev-ref HEAD`
-    end
   end
 end

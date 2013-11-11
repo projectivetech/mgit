@@ -1,16 +1,18 @@
 module MGit
   class Command
+    include Output
+
     @@commands = {}
     @@aliases = {}
 
-    def self.create(cmd)
-      cmd = cmd.downcase.to_sym
-      klass = @@commands[cmd] || @@aliases[cmd]
-      if klass
-        klass.new
-      else
-        raise UnknownCommandError.new(cmd)
-      end
+    def self.execute(name, args)
+      cmd = self.create(name)
+
+      arity_min, arity_max = cmd.arity
+      raise TooFewArgumentsError.new(cmd) if arity_min && args.size < arity_min
+      raise TooManyArgumentsError.new(cmd) if arity_max && args.size > arity_max
+
+      cmd.execute(args)
     end
 
     def self.register_command(cmd)
@@ -31,16 +33,22 @@ module MGit
       end
     end
 
-    def usage
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the usage method.")
+    [:arity, :usage, :help, :description].each do |meth|
+      define_method(meth) do
+        raise ImplementationError.new("Command #{self.class.name} doesn't implement the #{meth.to_s} method.")
+      end
     end
 
-    def help
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the help method.")
-    end
+  private
 
-    def description
-      raise ImplementationError.new("Command #{self.class.name} doesn't implement the description method.")
+    def self.create(cmd)
+      cmd = cmd.downcase.to_sym
+      klass = @@commands[cmd] || @@aliases[cmd]
+      if klass
+        klass.new
+      else
+        raise UnknownCommandError.new(cmd)
+      end
     end
   end
 end

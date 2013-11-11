@@ -1,16 +1,17 @@
 module MGit
   class GrepCommand < Command
     def execute(args)
-      raise TooFewArgumentsError.new(self) if args.size == 0
-      raise TooManyArgumentsError.new(self) if args.size > 1
-
       ptrn = args[0]
 
       Registry.chdir_each do |repo|
-        puts "Looking for pattern '#{ptrn}' in repository #{repo.name}...".yellow
+        pinfo "Looking for pattern '#{ptrn}' in repository #{repo.name}..."
         puts `git grep #{ptrn}`
         puts
       end
+    end
+
+    def arity
+      [1, 1]
     end
 
     def usage

@@ -37,7 +37,7 @@ module MGit
   private
 
     def self.repofile
-      File.join(Dir.home, '.config/mgit.yml')
+      XDG['CONFIG_HOME'].to_path.join('mgit.yml')
     end
 
     def self.load
