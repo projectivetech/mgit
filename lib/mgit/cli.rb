@@ -5,6 +5,8 @@ module MGit
       command = Command.execute(ARGV.shift, ARGV)
     rescue UsageError => e
       $stderr.puts e
+    rescue GitError => e
+      $stderr.puts e
     end
   end
 end
