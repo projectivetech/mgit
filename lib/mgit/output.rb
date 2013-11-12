@@ -37,7 +37,11 @@ module MGit
         end
 
         table.map do |row|
-          row.map.with_index { |cell, i| justify(cell, cw[i]) }.join(' | ')
+          row.map.with_index do |cell, i| 
+            # Only justify the column if it is not the last one.
+            # This avoids too many line breaks.
+            i < (columns - 1) ? justify(cell, cw[i]) : cell
+          end.join(' | ')
         end.join("\n")
       end
 

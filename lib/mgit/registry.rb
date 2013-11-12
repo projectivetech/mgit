@@ -3,7 +3,7 @@ require 'yaml'
 module MGit
   module Registry
     def self.all
-      self.load.map { |name, path| Repository.new(name, path) }
+      self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path)
     end
 
     def self.each(&block)
