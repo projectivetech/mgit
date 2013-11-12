@@ -4,8 +4,8 @@ module MGit
   class StatusCommand < Command
     def execute(args)
       t = []
-      Registry.chdir_each { |repo| t << [repo.name, flags(repo).to_a.join(', ')] }
-      ptable t, :columns => [24, nil]
+      Registry.chdir_each { |repo| t << [repo.name, repo.current_branch, flags(repo).to_a.join(', ')] }
+      ptable t, :columns => [24, nil, nil]
     end
 
     def arity
