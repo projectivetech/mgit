@@ -50,6 +50,11 @@ describe 'status command' do
       command.execute([])
       expect(@stdout.string).to match(/Detached/)
     end
+
+    it 'reports the current branch as \'HEAD\'' do
+      command.execute([])
+      expect(@stdout.string).to match(/HEAD/)
+    end
   end
 
   context 'with an indexed file' do

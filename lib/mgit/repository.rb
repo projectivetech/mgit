@@ -10,7 +10,10 @@ module MGit
     end
 
     def current_branch
-      in_repo { `git rev-parse --abbrev-ref HEAD`.strip }
+      in_repo { 
+        b = `git rev-parse --abbrev-ref HEAD 2>&1`.strip 
+        $?.exitstatus == 0 ? b : 'HEAD'
+      }
     end
 
     def remote_tracking_branches
