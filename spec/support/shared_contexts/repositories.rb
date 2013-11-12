@@ -25,6 +25,17 @@ shared_context 'managed_repository' do |state|
       FileUtils.touch(File.join(@repo_path, 'untracked'))
     end
 
+    # Some initial commits.
+    if state.include?(:history)
+      Dir.chdir(@repo_path) do
+        (1..3).each do |i|
+          FileUtils.touch("initial#{i}")
+          `git add initial#{i}`
+          `git commit -m 'initial commit #{i}'`
+        end
+      end
+    end
+
     if state.include?(:detached)
       Dir.chdir(@repo_path) do
         FileUtils.touch('commit1')
@@ -50,6 +61,34 @@ shared_context 'managed_repository' do |state|
       Dir.chdir(@repo_path) do
         FileUtils.touch('index')
         `git add index`
+      end
+    end
+  end
+end
+
+shared_context 'tracking_repository' do |state|
+  state = [] unless state
+  state = [state] unless state.is_a?(Array)
+
+  before(:each) do
+    raise 'tracking repo needs managed repo' unless File.directory?(@repo_path)
+
+    @tracking_repo_name = 'tracking'
+    @tracking_repo_path = File.join(@root, @tracking_repo_name)
+    `git clone #{@repo_path} #{@tracking_repo_path}`
+    MGit::Registry.add(@tracking_repo_name, @tracking_repo_path)
+
+    if state.include?(:behind)
+      Dir.chdir(@tracking_repo_path) do
+        `git reset --hard HEAD^`
+      end
+    end
+
+    if state.include?(:ahead)
+      Dir.chdir(@tracking_repo_path) do
+        FileUtils.touch('ahead')
+        `git add 'ahead'`
+        `git commit -m 'ahead'`
       end
     end
   end

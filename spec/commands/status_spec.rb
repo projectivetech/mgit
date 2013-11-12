@@ -7,6 +7,15 @@ describe 'status command' do
     MGit::Command.create('status')
   end
 
+  context 'in any case' do
+    include_context 'managed_repository'
+
+    it 'reports the current working branch' do
+      command.execute([])
+      expect(@stdout.string).to match(/master/)
+    end
+  end
+
   context 'with a clean repository' do
     include_context 'managed_repository'
     
@@ -49,6 +58,26 @@ describe 'status command' do
     it 'reports index' do
       command.execute([])
       expect(@stdout.string).to match(/Index/)
+    end
+  end
+
+  context 'when behind of upstream repository' do
+    include_context 'managed_repository', :history
+    include_context 'tracking_repository', :behind
+
+    it 'reports behind' do
+      command.execute([])
+      expect(@stdout.string).to match(/Behind/)
+    end
+  end
+
+  context 'when ahead of upstream repository' do
+    include_context 'managed_repository', :history
+    include_context 'tracking_repository', :ahead
+
+    it 'reports behind' do
+      command.execute([])
+      expect(@stdout.string).to match(/Ahead/)
     end
   end
 end
