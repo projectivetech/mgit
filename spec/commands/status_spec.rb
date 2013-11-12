@@ -8,7 +8,7 @@ describe 'status command' do
   end
 
   context 'in any case' do
-    include_context 'managed_repository'
+    include_context 'managed_repository', :history
 
     it 'reports the current working branch' do
       command.execute([])
