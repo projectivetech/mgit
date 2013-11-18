@@ -16,15 +16,24 @@ module MGit
       }
     end
 
-    def remote_tracking_branches
+    def remote_tracking_branches(upstream_exists_only = true)
+      rb = remote_branches
+
       a = in_repo do
         `git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads`.
           split("\n").
           map { |b| b.split(' ') }.
-          reject { |b| b.size != 2 }
+          reject { |b| b.size != 2 }.
+          select { |b| !upstream_exists_only || rb.include?(b[1]) }
       end
       
       Hash[a]
+    end
+
+    def remote_branches
+      in_repo do
+        `git branch -r`.split("\n").map { |a| a.split(' ')[0] }
+      end
     end
 
     def flags
@@ -69,7 +78,7 @@ module MGit
     end
 
   private
-  
+
     def in_repo
       Dir.chdir(path) { yield }
     end
