@@ -3,7 +3,7 @@ module MGit
     def execute(args)
       Registry.chdir_each do |repo|
         repo.remote_tracking_branches.each do |branch, upstream|
-          uc = unmerged_commits(branch, upstream)
+          uc = repo.unmerged_commits(branch, upstream)
           next if uc.empty?
 
           pinfo "In repository #{repo.name}, branch #{upstream} the following commits were made:"
@@ -28,20 +28,5 @@ module MGit
     end
 
     register_command :log
-
-  private
-
-    def unmerged_commits(branch, upstream)
-      `git log --pretty=format:"%h#%an#%s" --reverse  --relative-date #{branch}..#{upstream}`.
-        split("\n").
-        map { |line| line.split('#') }.
-        map do |words| 
-          {
-            :commit => words[0],
-            :author => words[1],
-            :subject => words[2..-1].join('#')
-          }
-        end
-    end
   end
 end

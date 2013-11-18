@@ -36,6 +36,21 @@ module MGit
       end
     end
 
+    def unmerged_commits(branch, upstream)
+      in_repo do
+        `git log --pretty=format:"%h#%an#%s" --reverse  --relative-date #{branch}..#{upstream}`.
+          split("\n").
+          map { |line| line.split('#') }.
+          map do |words| 
+            {
+              :commit => words[0],
+              :author => words[1],
+              :subject => words[2..-1].join('#')
+            }
+          end
+      end
+    end
+
     def flags
       flags = Set.new
       status_lines do |s|
