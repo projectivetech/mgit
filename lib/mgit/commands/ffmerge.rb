@@ -34,7 +34,7 @@ module MGit
     end
 
     def description
-      'merge all upstream tracking branches that can be fast-forwardeded'
+      'merge all upstream tracking branches that can be fast-forwarded'
     end
 
     register_command :ffmerge
