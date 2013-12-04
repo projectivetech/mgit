@@ -3,7 +3,6 @@ module MGit
     include Output
 
     @@commands = {}
-    @@aliases = {}
 
     def self.execute(name, args)
       cmd = self.create(name)
@@ -19,9 +18,7 @@ module MGit
       @@commands[cmd] = self
     end
 
-    def self.register_alias(cmd)
-      @@aliases[cmd] = self
-    end
+    self.singleton_class.send(:alias_method, :register_alias, :register_command)
 
     def self.list
       '[' + @@commands.keys.join(', ') + ']'
@@ -43,7 +40,7 @@ module MGit
 
     def self.create(cmd)
       cmd = cmd.downcase.to_sym
-      klass = @@commands[cmd] || @@aliases[cmd]
+      klass = @@commands[cmd]
       if klass
         klass.new
       else
