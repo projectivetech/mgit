@@ -34,6 +34,10 @@ module MGit
       self.save! repos
     end
 
+    def self.clean
+      self.save!({})
+    end
+
   private
 
     def self.repofile

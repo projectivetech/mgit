@@ -3,14 +3,11 @@ module MGit
     include Output
 
     @@commands = {}
+    @@aliases = {}
 
     def self.execute(name, args)
       cmd = self.create(name)
-
-      arity_min, arity_max = cmd.arity
-      raise TooFewArgumentsError.new(cmd) if arity_min && args.size < arity_min
-      raise TooManyArgumentsError.new(cmd) if arity_max && args.size > arity_max
-
+      cmd.check_arity(args)
       cmd.execute(args)
     end
 
@@ -18,7 +15,9 @@ module MGit
       @@commands[cmd] = self
     end
 
-    self.singleton_class.send(:alias_method, :register_alias, :register_command)
+    def self.register_alias(cmd)
+      @@aliases[cmd] = self
+    end
 
     def self.list
       '[' + @@commands.keys.join(', ') + ']'
@@ -28,6 +27,12 @@ module MGit
       @@commands.each do |_, klass|
         yield klass.new
       end
+    end
+
+    def check_arity(args)
+      arity_min, arity_max = self.arity
+      raise TooFewArgumentsError.new(self) if arity_min && args.size < arity_min
+      raise TooManyArgumentsError.new(self) if arity_max && args.size > arity_max
     end
 
     [:arity, :usage, :help, :description].each do |meth|
@@ -40,7 +45,7 @@ module MGit
 
     def self.create(cmd)
       cmd = cmd.downcase.to_sym
-      klass = @@commands[cmd]
+      klass = @@commands[cmd] || @@aliases[cmd]
       if klass
         klass.new
       else
