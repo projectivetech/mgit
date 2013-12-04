@@ -5,7 +5,7 @@ module MGit
 
       Registry.chdir_each do |repo|
         pinfo "Executing command in repository #{repo.name}..."
-        if !system(command) && !ask("Executing command '#{command}' in repository '#{repo.name}' failed. Would you like to continue anyway?".red)
+        if !system(command) && !agree("Executing command '#{command}' in repository '#{repo.name}' failed. Would you like to continue anyway?".red)
           break
         end
       end
