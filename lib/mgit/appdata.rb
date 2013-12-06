@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'yaml'
 
 module MGit
@@ -8,15 +9,19 @@ module MGit
     ####################
 
     def self.update
-      AppDataVersion.updates.each { |u| u.migrate! }
+      if AppDataVersion.active
+        AppDataVersion.updates.each { |u| u.migrate! }
+      else
+        AppDataVersion.latest.setup
+      end
     end
 
     def self.load(key, default = {})
-      AppDataVersion.current.load(key, default)
+      AppDataVersion.latest.load(key, default)
     end
 
     def self.save!(key, value)
-      AppDataVersion.current.save!(key, value)
+      AppDataVersion.latest.save!(key, value)
     end
 
     #########################################
@@ -39,7 +44,11 @@ module MGit
         self.sorted.drop_while { |v| !v.active? }.drop(1)
       end
 
-      def self.current
+      def self.active
+        self.sorted.find { |v| v.active? }
+      end
+
+      def self.latest
         self.sorted.last
       end
 
@@ -71,12 +80,17 @@ module MGit
 
       def load(key, default)
         raise ImplementationError.new('LegacyAppData::load called with unknown key.') if key != :repositories
-        YAML.load_file(repofile)
+        repos = YAML.load_file(repofile)
+        repos ? repos : default
       end
 
       def save!(key, value)
         raise ImplementationError.new('LegacyAppData::save! called with unknown key.') if key != :repositories
         File.open(repofile, 'w') { |fd| fd.write value.to_yaml }
+      end
+
+      def setup
+        FileUtils.touch(repofile)
       end
 
     private

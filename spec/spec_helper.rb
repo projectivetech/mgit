@@ -16,12 +16,16 @@ RSpec.configure do |config|
     # Create test data directory.
     FileUtils.mkdir(@root)
 
-    # Stub the configuration file.
-    MGit::Registry.stub(:repofile).and_return(@repofile)
+    # Create the repofile.
+    FileUtils.touch(@repofile)
+
+    # Stub the XDG home.
+    class << @root; def to_path; Pathname.new(self); end; end
+    XDG.stub(:[]).and_return(@root)
   end
 
   config.after(:each) do
     # Clean up test data.
-    FileUtils.rm_r(@root)
+    FileUtils.rm_rf(@root)
   end
 end
