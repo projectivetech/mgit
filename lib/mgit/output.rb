@@ -28,8 +28,9 @@ module MGit
       end
 
       def to_s
+        return '' if table.empty?
+
         cw = column_widths
-        
         if options[:columns]
           options[:columns].each_with_index do |c, i|
             cw[i] = c if c

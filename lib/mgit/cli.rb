@@ -4,6 +4,11 @@ module MGit
 
     def start
       raise NoCommandError if ARGV.size == 0
+
+      # Initialize AppData and migrate if necessary.
+      AppData.update
+
+      # Run command, consuming its name from the list of arguments.
       command = Command.execute(ARGV.shift, ARGV)
     rescue UsageError => e
       perror e.to_s

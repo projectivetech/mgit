@@ -7,11 +7,7 @@ module MGit
 
     def self.execute(name, args)
       cmd = self.create(name)
-
-      arity_min, arity_max = cmd.arity
-      raise TooFewArgumentsError.new(cmd) if arity_min && args.size < arity_min
-      raise TooManyArgumentsError.new(cmd) if arity_max && args.size > arity_max
-
+      cmd.check_arity(args)
       cmd.execute(args)
     end
 
@@ -31,6 +27,12 @@ module MGit
       @@commands.each do |_, klass|
         yield klass.new
       end
+    end
+
+    def check_arity(args)
+      arity_min, arity_max = self.arity
+      raise TooFewArgumentsError.new(self) if arity_min && args.size < arity_min
+      raise TooManyArgumentsError.new(self) if arity_max && args.size > arity_max
     end
 
     [:arity, :usage, :help, :description].each do |meth|
