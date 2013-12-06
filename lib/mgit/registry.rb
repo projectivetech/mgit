@@ -1,5 +1,3 @@
-require 'yaml'
-
 module MGit
   module Registry
     def self.all
@@ -40,16 +38,12 @@ module MGit
 
   private
 
-    def self.repofile
-      XDG['CONFIG_HOME'].to_path.join('mgit.yml')
-    end
-
     def self.load
-      File.exists?(self.repofile) ? YAML.load_file(self.repofile) : {}
+      AppData.load(:repositories)
     end
 
     def self.save!(repos)
-      File.open(self.repofile, 'w') { |fd| fd.write repos.to_yaml }
+      AppData.save!(:repositories, repos)
     end
   end
 end
