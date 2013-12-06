@@ -16,6 +16,10 @@ module MGit
       }
     end
 
+    def current_head
+      in_repo { `git rev-parse --verify --short HEAD`.strip }
+    end
+
     def remote_tracking_branches(upstream_exists_only = true)
       rb = remote_branches
 
