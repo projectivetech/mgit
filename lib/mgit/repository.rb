@@ -96,11 +96,13 @@ module MGit
       [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
     end
 
-  private
-
     def in_repo
       Dir.chdir(path) { yield }
     end
+
+    alias_method :chdir, :in_repo
+
+  private
 
     def status
       @status ||= in_repo { `git status --short --branch --ignore-submodules`.split("\n") }
