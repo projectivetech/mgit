@@ -3,7 +3,7 @@ module MGit
     def execute(args)
       t = []
       Registry.chdir_each { |repo| t << [repo.name, *latest_tag] }
-      ptable t, :columns => [24, nil]
+      ptable t, :columns => [24, nil, nil]
     end
 
     def arity
