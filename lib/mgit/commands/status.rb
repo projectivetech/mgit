@@ -17,7 +17,7 @@ module MGit
     end
 
     def description
-      'display status for each repositories'
+      'display status for each repository'
     end
 
     register_command :status
