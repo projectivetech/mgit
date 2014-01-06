@@ -1,12 +1,31 @@
+require 'open3'
+
 module MGit
   class FetchCommand < Command
     def execute(args)
-      Registry.chdir_each do |repo|
-        `git remote`.split.each do |remote|
-          pinfo "Fetching #{remote} in repository #{repo.name}..."
-          `git fetch #{remote}`
+      threads = []
+      Registry.each do |repo|
+        threads << Thread.new do
+          remotes, st = Open3.capture2('git remote', :chdir => repo.path)
+
+          if st.exitstatus != 0
+            perror "Failed to read remotes for repository #{repo.name}! Abort." 
+            Thread.exit
+          end
+
+          remotes.split.each do |remote|
+            sout, st = Open3.capture2("git fetch #{remote}", :chdir => repo.path)
+            if st.exitstatus == 0
+              pinfo "Fetched #{remote} in repository #{repo.name}."
+            else
+              perror "Failed to fetch #{remote} in repository #{repo.name}! Abort."
+              break
+            end
+          end
         end
       end
+
+      threads.each { |t| t.join }
     end
 
     def arity
