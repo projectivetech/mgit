@@ -1,15 +1,19 @@
 module MGit
   module Registry
     def self.all
-      self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path).select(&:available?)
+      self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path)
+    end
+
+    def self.available
+      self.all.select(&:available?)
     end
 
     def self.each(&block)
-      self.all.each(&block)
+      self.available.each(&block)
     end
 
     def self.chdir_each
-      self.all.each do |repo|
+      self.available.select(&:available?).each do |repo|
         Dir.chdir(repo.path) do
           yield repo
         end
