@@ -4,7 +4,7 @@ module MGit
   class StatusCommand < Command
     def execute(args)
       t = []
-      Registry.chdir_each { |repo| t << [repo.name, repo.current_branch, flags(repo).to_a.join(', ')] }
+      Registry.chdir_each { |repo| t << [repo.name, repo.current_branch, decorate_flags(repo)] }
       ptable t, :columns => [24, nil, nil]
     end
 
@@ -17,7 +17,7 @@ module MGit
     end
 
     def description
-      'display status for each repositories'
+      'display status for each repository'
     end
 
     register_command :status
@@ -25,27 +25,24 @@ module MGit
 
   private
 
-    def flags(repo)
-      flags = []
+    def decorate_flags(repo)
+      flags = repo.flags
+      labels = decorate_simple_flags(flags)
+      labels.concat(decorate_divergence_flags(repo.divergence)) if flags.include?(:diverged)
+      labels = ['Clean'.green] if labels.empty?
+      labels.to_a.join(', ')
+    end
 
-      fs = repo.flags
-      flags << 'Index'.red if fs.include?(:index)
-      flags << 'Dirty'.red if fs.include?(:dirty)
-      flags << 'Untracked'.yellow if fs.include?(:untracked)
-      flags << 'Detached'.yellow if fs.include?(:detached)
+    def decorate_simple_flags(flags)
+      { :index => :red, :dirty => :red, :untracked => :yellow, :detached => :yellow }
+        .select { |f,_| flags.include?(f) }
+        .map { |f,c| f.to_s.capitalize.send(c) }
+    end
 
-      if fs.include?(:diverged)
-        ds = repo.divergence
-        ds.each do |d|
-          flags << "#{d.first[0].to_s.capitalize} of #{d.first[1][:branch]} by #{d.first[1][:by]}".blue
-        end
+    def decorate_divergence_flags(divergence)
+      divergence.map do |d|
+        "#{d.first[0].to_s.capitalize} of #{d.first[1][:branch]} by #{d.first[1][:by]}".blue
       end
-
-      if flags.empty?
-        flags << 'Clean'.green
-      end
-
-      flags
     end
   end
 end

@@ -1,7 +1,7 @@
 module MGit
   module Registry
     def self.all
-      self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path)
+      self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path).select(&:available?)
     end
 
     def self.each(&block)
