@@ -2,11 +2,22 @@ require 'set'
 
 module MGit
   class Repository
+    include Output
+
     attr_reader :name, :path
 
     def initialize(name, path)
       @name = name
       @path = path
+    end
+
+    def available?
+      if !File.directory?(path)
+        pwarn "Repository #{name} is not available anymore. Failed to read #{path}."
+        return false
+      end
+
+      true
     end
 
     def current_branch
