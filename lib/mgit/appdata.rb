@@ -12,7 +12,7 @@ module MGit
       if AppDataVersion.active
         AppDataVersion.updates.each { |u| u.migrate! }
       else
-        AppDataVersion.latest.setup
+        AppDataVersion.latest.setup!
       end
     end
 
@@ -78,6 +78,10 @@ module MGit
         File.file?(repofile)
       end
 
+      def setup!
+        FileUtils.touch(repofile)
+      end
+
       def load(key, default)
         raise ImplementationError.new("LegacyAppData::load called with unknown key #{key}.") if key != :repositories
         repos = YAML.load_file(repofile)
@@ -87,10 +91,6 @@ module MGit
       def save!(key, value)
         raise ImplementationError.new("LegacyAppData::save! called with unknown key #{key}.") if key != :repositories
         File.open(repofile, 'w') { |fd| fd.write value.to_yaml }
-      end
-
-      def setup
-        FileUtils.touch(repofile)
       end
 
     private
@@ -110,11 +110,16 @@ module MGit
       end
 
       def migrate!
-        FileUtils.mkdir_p(config_dir)
-        File.open(config_file, 'w') { |fd| fd.write ({ :version => '1' }.to_yaml) }
+        setup!
 
         old_repofile = LegacyAppData.new.send(:repofile)
         FileUtils.mv(old_repofile, repo_file) if File.file?(old_repofile)
+      end
+
+      def setup!
+        FileUtils.mkdir_p(config_dir)
+        File.open(config_file, 'w') { |fd| fd.write ({ :version => '1' }.to_yaml) }
+        FileUtils.touch(repo_file)
       end
 
       def load(key, default)
