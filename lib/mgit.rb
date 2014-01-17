@@ -4,6 +4,7 @@ require 'xdg'
 
 require 'mgit/version'
 require 'mgit/appdata'
+require 'mgit/configuration'
 require 'mgit/exceptions'
 require 'mgit/output'
 require 'mgit/registry'
