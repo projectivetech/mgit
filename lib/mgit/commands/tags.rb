@@ -1,8 +1,10 @@
+require 'open3'
+
 module MGit
   class TagsCommand < Command
     def execute(args)
       t = []
-      Registry.chdir_each { |repo| t << [repo.name, *latest_tag] }
+      Registry.each { |repo| t << print_latest_tag(repo) }
       ptable t, :columns => [24, nil, nil]
     end
 
@@ -15,23 +17,27 @@ module MGit
     end
 
     def description
-      'display the latest tag in repository'
+      'display the latest tag in repository (master branch)'
     end
 
     register_command :tags
 
   private
 
-    def latest_tag
-      sha = `git rev-list --tags --max-count=1 2>&1`.strip
-      sha =~ /usage:/ ? ['none', ''] : print_tag(sha)
+    def latest_tag(path)
+      sout, serr, st = Open3.capture3('git describe --tags --abbrev=0 master', :chdir => path)
+      (/fatal:/ =~ serr) ? 'none' : sout.strip
     end
 
-    def print_tag(sha)
-      [
-        `git describe #{sha}`.strip,
-        Time.at(`git log -n 1 --format="%at" #{sha}`.strip.to_i).strftime('%Y-%m-%d')
-      ]
+    def latest_tag_time(path, tag)
+      sout, st = Open3.capture3("git log -n 1 --format='%at' #{tag}", :chdir => path)
+      Time.at(sout.strip.to_i).strftime('%Y-%m-%d')
+    end
+
+    def print_latest_tag(repo)
+      tag = latest_tag(repo.path)
+      commit = (tag == 'none') ? 'n/a' : latest_tag_time(repo.path, tag)
+      [repo.name, tag, commit]
     end
   end
 end
