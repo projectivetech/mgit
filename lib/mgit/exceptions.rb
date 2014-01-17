@@ -51,4 +51,6 @@ module MGit
       super('Too many arguments.', cmd)
     end
   end
+
+  class ConfigurationError < StandardError; end
 end
