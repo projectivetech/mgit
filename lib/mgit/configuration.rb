@@ -4,6 +4,11 @@ module MGit
       :threads => {
         :default => true,
         :description => 'set to true if you want the fetch command to be threaded'
+      },
+
+      :plugindir => {
+        :default => File.join(AppData::AppDataVersion.latest.send(:config_dir), 'plugins'),
+        :description => 'directory from where plugin commands are loaded'
       }
     }
 

@@ -5,6 +5,11 @@ module MGit
     @@commands = {}
     @@aliases = {}
 
+    def self.load_commands
+      require_commands_from_directory File.expand_path('../commands', __FILE__)
+      require_commands_from_directory Configuration.plugindir
+    end
+
     def self.execute(name, args)
       cmd = self.create(name)
       cmd.check_arity(args)
@@ -51,6 +56,10 @@ module MGit
       else
         raise UnknownCommandError.new(cmd)
       end
+    end
+
+    def self.require_commands_from_directory(dir)
+      Dir["#{dir}/*.rb"].each { |file| require file }
     end
   end
 end
