@@ -24,6 +24,7 @@ module MGit
       def initialize(table, options)
         @table = table
         @options = options
+        @options[:columns] = []
         raise ImplementationError.new('ptable called with invalid table') unless valid_table?
       end
 
@@ -31,11 +32,6 @@ module MGit
         return '' if table.empty?
 
         cw = column_widths
-        if options[:columns]
-          options[:columns].each_with_index do |c, i|
-            cw[i] = c if c
-          end
-        end
 
         table.map do |row|
           row.map.with_index do |cell, i| 
@@ -65,6 +61,12 @@ module MGit
       end
 
       def column_widths
+        column_max_widths.each_with_index.map do |c, i| 
+          (options[:columns].size > i && options[:columns][i]) ? options[:columns][i] : c
+        end
+      end
+
+      def column_max_widths
         transpose.map do |col|
           col.map { |cell| cell.size }.max
         end

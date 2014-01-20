@@ -23,3 +23,10 @@ See its status:
 ```sh
 mgit status
 ```
+
+Get help:
+
+```sh
+mgit help
+```
+
