@@ -24,6 +24,7 @@ module MGit
       def initialize(table, options)
         @table = table
         @options = options
+        @options[:columns] = []
         raise ImplementationError.new('ptable called with invalid table') unless valid_table?
       end
 
