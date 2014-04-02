@@ -21,25 +21,26 @@ module MGit
     end
 
     def current_branch
-      in_repo { 
-        b = `git rev-parse --abbrev-ref HEAD 2>&1`.strip 
-        $?.exitstatus == 0 ? b : 'HEAD'
+      in_repo {
+        sc = System::git('rev-parse --abbrev-ref HEAD')
+        sc.success? ? sc.stdout.strip : 'HEAD'
       }
     end
 
     def current_head
-      in_repo { `git rev-parse --verify --short HEAD`.strip }
+      in_repo { System::git('rev-parse --verify --short HEAD').stdout.strip }
     end
 
     def remote_tracking_branches(upstream_exists_only = true)
       rb = remote_branches
 
       a = in_repo do
-        `git for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads`.
-          split("\n").
-          map { |b| b.split(' ') }.
-          reject { |b| b.size != 2 }.
-          select { |b| !upstream_exists_only || rb.include?(b[1]) }
+        System::git("for-each-ref --format='%(refname:short) %(upstream:short)' refs/heads")
+          .stdout
+          .split("\n")
+          .map { |b| b.split(' ') }
+          .reject { |b| b.size != 2 }
+          .select { |b| !upstream_exists_only || rb.include?(b[1]) }
       end
       
       Hash[a]
@@ -47,16 +48,17 @@ module MGit
 
     def remote_branches
       in_repo do
-        `git branch -r`.split("\n").map { |a| a.split(' ')[0] }
+        System::git('branch -r').stdout.split("\n").map { |a| a.split(' ')[0] }
       end
     end
 
     def unmerged_commits(branch, upstream)
       in_repo do
-        `git log --pretty=format:"%h#%an#%s" --reverse  --relative-date #{branch}..#{upstream}`.
-          split("\n").
-          map { |line| line.split('#') }.
-          map do |words| 
+        System::git("log --pretty=format:'%h#%an#%s' --reverse  --relative-date #{branch}..#{upstream}")
+          .stdout
+          .split("\n")
+          .map { |line| line.split('#') }
+          .map do |words| 
             {
               :commit => words[0],
               :author => words[1],
@@ -116,7 +118,7 @@ module MGit
   private
 
     def status
-      @status ||= in_repo { `git status --short --branch --ignore-submodules`.split("\n") }
+      @status ||= in_repo { System::git('status --short --branch --ignore-submodules').stdout.split("\n") }
     end
 
     def status_lines

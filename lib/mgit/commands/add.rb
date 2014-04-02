@@ -34,11 +34,11 @@ module MGit
     end
 
     def is_git_dir?(path)
-      Dir.chdir(path) { `git status 2>&1` !~ /fatal: Not a git repository/ }
+      System::git('status', :chdir => path) !~ /fatal: Not a git repository/
     end
 
     def is_bare?(path)
-      Dir.chdir(path) { `git status 2>&1` =~ /fatal: This operation must be run in a work tree/}
+      System::git('status', :chdir => path) =~ /fatal: This operation must be run in a work tree/
     end
   end
 end

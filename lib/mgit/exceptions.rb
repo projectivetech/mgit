@@ -1,7 +1,20 @@
 module MGit
   class ImplementationError < StandardError; end
 
-  class GitError < StandardError
+  class SystemCommandError < StandardError
+    attr_reader :cmd, :error
+
+    def initialize(cmd, error)
+      @cmd = cmd
+      @error = error
+    end
+
+    def to_s
+      "Error: #{@error}\nCommand was: #{@cmd}"
+    end
+  end
+
+  class GitError < SystemCommandError
     def initialize(error)
       @error = error
     end

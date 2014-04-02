@@ -1,5 +1,9 @@
 module MGit
   module Output
+    def psystem(s)
+      puts s
+    end
+
     def pinfo(s)
       puts s.green
     end

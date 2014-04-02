@@ -1,9 +1,8 @@
 module MGit
   class CloneCommand < Command
     def execute(args)
-      log = `git clone #{args.join(' ')}`
-      raise GitError.new('Clone command failed.') if $?.exitstatus != 0
-
+      log = System::git("clone #{args.join(' ')}", { :raise => true, :print_stderr => true }).stdout
+      
       m = /Cloning into '(.*)'/.match(log.split("\n").first)
       Command.execute('add', [m[1]])
     end

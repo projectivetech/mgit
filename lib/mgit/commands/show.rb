@@ -40,13 +40,11 @@ module MGit
     end
 
     def has_commit?
-      !(`git rev-parse --quiet --verify #{@commit}`.empty?)
+      !(System::git("rev-parse --quiet --verify #{@commit}").stdout.empty?)
     end
 
     def show_commit(repo)
-      repo.chdir do
-        system("git show #{@commit}")
-      end
+      System::git("show #{@commit}", { :chdir => repo.path, :print_stdout => true } )
     end
 
     def show_menu

@@ -3,10 +3,9 @@ module MGit
     def execute(args)
       ptrn = args[0]
 
-      Registry.chdir_each do |repo|
+      Registry.each do |repo|
         pinfo "Looking for pattern '#{ptrn}' in repository #{repo.name}..."
-        puts `git grep #{ptrn}`
-        puts
+        System::git("grep #{ptrn}", { :chdir => repo.path, :print_stdout => true })
       end
     end
 
