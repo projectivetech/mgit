@@ -9,6 +9,7 @@ require 'mgit/exceptions'
 require 'mgit/output'
 require 'mgit/registry'
 require 'mgit/repository'
+require 'mgit/system'
 
 require 'mgit/cli'
 require 'mgit/command'

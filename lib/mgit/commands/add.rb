@@ -6,9 +6,7 @@ module MGit
       raise CommandUsageError.new('First argument must be a path to a git repository.', self) unless is_git_dir?(path)
       raise CommandUsageError.new('Sorry, mgit can not handle bare repositories.', self) if is_bare?(path)
 
-      # NOTE: The to_s to the HighLine::String is needed due to a bug in YAML/Psych in Ruby 2.0.0.
-      # https://github.com/JEG2/highline/issues/69
-      name = (args.size == 2) ? args[1] : (ask('Name of the repository? ') { |q| q.default = File.basename(path) }).to_s
+      name = (args.size == 2) ? args[1] : File.basename(path)
       raise CommandUsageError.new("Repository named #{name} already exists with different path.", self) unless is_new_or_same?(name, path)
       
       Registry.add(name, path)
@@ -36,11 +34,11 @@ module MGit
     end
 
     def is_git_dir?(path)
-      Dir.chdir(path) { `git status 2>&1` !~ /fatal: Not a git repository/ }
+      System::git('status', :chdir => path) !~ /fatal: Not a git repository/
     end
 
     def is_bare?(path)
-      Dir.chdir(path) { `git status 2>&1` =~ /fatal: This operation must be run in a work tree/}
+      System::git('status', :chdir => path) =~ /fatal: This operation must be run in a work tree/
     end
   end
 end

@@ -18,7 +18,7 @@ Add some repositories:
 mgit add <path to some git repository>
 ```
 
-See its status:
+See the status:
 
 ```sh
 mgit status

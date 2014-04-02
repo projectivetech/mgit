@@ -1,5 +1,7 @@
 module MGit
   module Registry
+    extend Enumerable
+
     def self.all
       self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path)
     end

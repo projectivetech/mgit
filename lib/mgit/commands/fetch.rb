@@ -4,11 +4,9 @@ module MGit
   class FetchCommand < Command
     def execute(args)
       thread_class = Configuration.threads ? Thread : NullThread
-      threads = []
-      Registry.each do |repo|
-        threads << thread_class.new do
-          fetch(repo)
-        end
+
+      threads = Registry.collect do |repo|
+        thread_class.new { fetch(repo) }
       end
 
       threads.each { |t| t.join }
@@ -31,16 +29,15 @@ module MGit
   private
 
     def fetch(repo)
-      remotes, st = Open3.capture2('git remote', :chdir => repo.path)
+      sc = System::git('remote', :chdir => repo.path)
 
-      if st.exitstatus != 0
+      if !sc.success?
         perror "Failed to read remotes for repository #{repo.name}! Abort."
-        Thread.exit
+        return
       end
 
-      remotes.split.each do |remote|
-        sout, st = Open3.capture2("git fetch #{remote}", :chdir => repo.path)
-        if st.exitstatus == 0
+      sc.stdout.strip.split.each do |remote|
+        if System::git("fetch #{remote}", :chdir => repo.path).success?
           pinfo "Fetched #{remote} in repository #{repo.name}."
         else
           perror "Failed to fetch #{remote} in repository #{repo.name}! Abort."

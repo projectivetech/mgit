@@ -1,5 +1,5 @@
 module MGit
-  class ListCommand < Command
+  class HeadCommand < Command
     def execute(args)
       t = []
       Registry.each { |repo| t << [repo.name, repo.current_branch, repo.current_head] }

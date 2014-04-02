@@ -3,10 +3,11 @@ module MGit
     def execute(args)
       if args.size == 0
         pinfo "M[eta]Git - manage multiple git repositories at the same time"
-        puts
+        pinfo ''
         pinfo "Usage:"
         Command.instance_each do |cmd|
-          pinfo "mgit #{cmd.usage}\n\t- #{cmd.description}"
+          pinfo "mgit #{cmd.usage}"
+          pinfo "\t- #{cmd.description}"
         end
       else
         pinfo Command.create(args[0]).help

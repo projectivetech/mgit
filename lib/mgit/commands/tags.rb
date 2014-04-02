@@ -25,13 +25,12 @@ module MGit
   private
 
     def latest_tag(path)
-      sout, serr, st = Open3.capture3('git describe --tags --abbrev=0 master', :chdir => path)
-      (/fatal:/ =~ serr) ? 'none' : sout.strip
+      sc = System::git('describe --tags --abbrev=0 master', :chdir => path)
+      sc =~ /fatal:/ ? 'none' : sc.stdout.strip
     end
 
     def latest_tag_time(path, tag)
-      sout, st = Open3.capture3("git log -n 1 --format='%at' #{tag}", :chdir => path)
-      Time.at(sout.strip.to_i).strftime('%Y-%m-%d')
+      Time.at(System::git("log -n 1 --format='%at' #{tag}", :chdir => path).stdout.strip.to_i).strftime('%Y-%m-%d')
     end
 
     def print_latest_tag(repo)

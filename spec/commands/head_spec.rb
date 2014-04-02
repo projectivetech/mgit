@@ -17,7 +17,8 @@ describe 'status command' do
   it 'reports the current HEAD commit' do
     command.execute([])
     Dir.chdir(@repo_path) do
-      commit = `git rev-parse --verify --short HEAD`
+      puts $stdout.inspect
+      commit = `git rev-parse --verify --short HEAD`.strip
       expect(@stdout.string).to include(commit)
     end
   end
