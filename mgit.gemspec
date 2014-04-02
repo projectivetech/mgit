@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   s.files         = Dir.glob('lib/**/*.rb')
   s.executables   = ['mgit']
 
+  s.required_ruby_version = '>= 1.9.3'
+
   s.add_dependency 'colorize', '~> 0.7.1'
   s.add_dependency 'highline', '~> 1.6.21'
   s.add_dependency 'xdg', '~> 2.2.3'
