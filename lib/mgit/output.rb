@@ -1,26 +1,34 @@
 module MGit
   module Output
     def psystem(s)
-      puts s
+      print_to_screen s
     end
 
     def pinfo(s)
-      puts s.green
+      print_to_screen s.green
     end
 
     def pwarn(s)
-      puts s.yellow
+      print_to_screen s.yellow
     end
 
     def perror(s)
-      puts s.red
+      print_to_screen s.red
     end
 
     def ptable(table, options = {})
-      puts TableOutputter.new(table, options).to_s
+      print_to_screen TableOutputter.new(table, options).to_s
     end
 
   private
+
+    def print_to_screen(s)
+      if Configuration.colors
+        puts s
+      else
+        puts s.uncolorize
+      end
+    end
 
     class TableOutputter
       attr_reader :table, :options
