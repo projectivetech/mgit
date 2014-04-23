@@ -18,9 +18,9 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.9.3'
 
-  s.add_dependency 'colorize', '~> 0.7.1'
-  s.add_dependency 'highline', '~> 1.6.21'
-  s.add_dependency 'xdg', '~> 2.2.3'
+  s.add_dependency 'colorize', '~> 0.7'
+  s.add_dependency 'highline', '~> 1.6'
+  s.add_dependency 'xdg', '~> 2.2'
 
-  s.add_development_dependency 'rspec', '~> 2.14.1'
+  s.add_development_dependency 'rspec', '~> 2.14'
 end
