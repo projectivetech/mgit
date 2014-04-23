@@ -15,4 +15,11 @@ require 'mgit/cli'
 require 'mgit/command'
 
 module MGit
+  def self.init
+    # Initialize AppData and migrate if necessary.
+    AppData.update
+
+    # Initialize Commands.
+    MGit::Command.load_commands
+  end
 end

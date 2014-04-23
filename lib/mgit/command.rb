@@ -63,6 +63,3 @@ module MGit
     end
   end
 end
-
-# Initialize Commands.
-MGit::Command.load_commands
