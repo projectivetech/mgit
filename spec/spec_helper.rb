@@ -20,8 +20,7 @@ RSpec.configure do |config|
     class << @root; def to_path; Pathname.new(self); end; end
     XDG.stub(:[]).and_return(@root)
 
-    # Initialize the application data.
-    MGit::AppData.update
+    MGit.init
   end
 
   config.after(:each) do
