@@ -41,7 +41,9 @@ module MGit
 
     def decorate_divergence_flags(divergence)
       divergence.map do |d|
-        "#{d.first[0].to_s.capitalize} of #{d.first[1][:branch]} by #{d.first[1][:by]}".blue
+        d.map do |k, v|
+          "#{k.to_s.capitalize} of #{v[:branch]} by #{v[:by]}".blue
+        end
       end
     end
   end
