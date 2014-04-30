@@ -79,7 +79,7 @@ module MGit
         when '??'
           flags << :untracked
         when '##'
-          if /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/ =~ s
+          if /## [\w,\/]+\.\.\.[\w,\/]+ \[.+\]/ =~ s
             flags << :diverged
           elsif /## HEAD \(no branch\)/ =~ s
             flags << :detached
@@ -93,7 +93,9 @@ module MGit
       divergence = []
       status_lines do |s|
         if s.split[0] == '##'
-          if(m = /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/.match(s))
+          if(m = /## ([\w,\/]+)\.\.\.([\w,\/]+) \[ahead (\d+), behind (\d+)\]/.match(s))
+            divergence << { :ahead => { :branch => m[2], :by => m[3] }, :behind => { :branch => m[2], :by => m[4] } }
+          elsif(m = /## ([\w,\/]+)\.\.\.([\w,\/]+) \[(\w+) (\d+)\]/.match(s))
             if m[3] =~ /behind/
               divergence << { :behind => { :branch => m[2], :by => m[4] } }
             else
