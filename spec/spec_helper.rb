@@ -17,8 +17,12 @@ RSpec.configure do |config|
     FileUtils.mkdir(@root)
 
     # Stub the XDG home.
-    class << @root; def to_path; Pathname.new(self); end; end
-    XDG.stub(:[]).and_return(@root)
+    class << @root
+      def to_path
+        Pathname.new(self)
+      end
+    end
+    expect(XDG).to receive(:[]).at_least(:once).and_return(@root)
 
     MGit.init
   end

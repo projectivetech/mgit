@@ -3,19 +3,19 @@ module MGit
     extend Enumerable
 
     def self.all
-      self.load.map { |name, path| Repository.new(name, path) }.sort_by(&:path)
+      load.map { |name, path| Repository.new(name, path) }.sort_by(&:path)
     end
 
     def self.available
-      self.all.select(&:available?)
+      all.select(&:available?)
     end
 
     def self.each(&block)
-      self.available.each(&block)
+      available.each(&block)
     end
 
     def self.chdir_each
-      self.available.select(&:available?).each do |repo|
+      available.select(&:available?).each do |repo|
         Dir.chdir(repo.path) do
           yield repo
         end
@@ -23,26 +23,26 @@ module MGit
     end
 
     def self.find(&block)
-      self.all.find(&block)
+      all.find(&block)
     end
 
     def self.add(name, path)
-      repos = self.load
+      repos = load
       repos[name] = path
-      self.save! repos
+      save! repos
     end
 
     def self.remove(name)
-      repos = self.load
+      repos = load
       repos.delete name
-      self.save! repos
+      save! repos
     end
 
     def self.clean
-      self.save!({})
+      save!({})
     end
 
-  private
+    private
 
     def self.load
       AppData.load(:repositories)

@@ -2,13 +2,13 @@ module MGit
   class AddCommand < Command
     def execute(args)
       path = File.expand_path(args[0])
-      raise CommandUsageError.new('First argument must be a path to a directory.', self) unless File.directory?(path)
-      raise CommandUsageError.new('First argument must be a path to a git repository.', self) unless is_git_dir?(path)
-      raise CommandUsageError.new('Sorry, mgit can not handle bare repositories.', self) if is_bare?(path)
+      fail CommandUsageError.new('First argument must be a path to a directory.', self) unless File.directory?(path)
+      fail CommandUsageError.new('First argument must be a path to a git repository.', self) unless git_dir?(path)
+      fail CommandUsageError.new('Sorry, mgit can not handle bare repositories.', self) if bare?(path)
 
       name = (args.size == 2) ? args[1] : File.basename(path)
-      raise CommandUsageError.new("Repository named #{name} already exists with different path.", self) unless is_new_or_same?(name, path)
-      
+      fail CommandUsageError.new("Repository named #{name} already exists with different path.", self) unless new_or_same?(name, path)
+
       Registry.add(name, path)
     end
 
@@ -26,19 +26,19 @@ module MGit
 
     register_command :add
 
-  private
+    private
 
-    def is_new_or_same?(name, path)
+    def new_or_same?(name, path)
       repo = Registry.find { |r| r.name == name }
       repo.nil? || repo.path == path
     end
 
-    def is_git_dir?(path)
-      System::git('status', :chdir => path) !~ /fatal: Not a git repository/
+    def git_dir?(path)
+      System.git('status', chdir: path) !~ /fatal: Not a git repository/
     end
 
-    def is_bare?(path)
-      System::git('status', :chdir => path) =~ /fatal: This operation must be run in a work tree/
+    def bare?(path)
+      System.git('status', chdir: path) =~ /fatal: This operation must be run in a work tree/
     end
   end
 end

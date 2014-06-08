@@ -1,6 +1,6 @@
 module MGit
   class FFMergeCommand < Command
-    def execute(args)
+    def execute(_)
       Registry.chdir_each do |repo|
         branches = mergable_branches(repo)
         next if branches.empty?
@@ -28,12 +28,12 @@ module MGit
 
     register_command :ffmerge
 
-  private
+    private
 
     def mergable_branches(repo)
       repo.remote_tracking_branches.select do |branch, upstream|
         !repo.unmerged_commits(branch, upstream).empty?
-      end.map { |b, u| b }
+      end.keys
     end
 
     def merge_branches(repo, branches)
@@ -45,15 +45,15 @@ module MGit
         branches.each { |b| merge_branch(b) }
       rescue GitError
         perror "Failed to merge a branch in repository #{repo.name}."
-        pwarn "Please visit this repository and check that everything's alright. Trying to set back to original working branch."
+        pwarn 'Please visit this repository and check that everything\'s alright. Trying to set back to original working branch.'
       ensure
-        System::git("checkout -q #{cb}", :print_stderr => true)
+        System.git("checkout -q #{cb}", print_stderr: true)
       end
     end
 
     def merge_branch(branch)
-      System::git("checkout -q #{branch}", { :raise => true, :print_stderr => true })
-      System::git("merge --ff-only @{u}", { :raise => true, :print_stderr => true })
+      System.git("checkout -q #{branch}", raise: true, print_stderr: true)
+      System.git('merge --ff-only @{u}', raise: true, print_stderr: true)
     end
   end
 end

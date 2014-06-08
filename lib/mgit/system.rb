@@ -13,26 +13,26 @@ module MGit
 
         psystem(stdout.strip) if opts[:print_stdout]
 
-        if !success?
-          psystem(stderr.strip) if opts[:print_stderr]
-          raise SystemCommandError.new(cmd, opts[:error]) if opts[:raise]
-        end
+        return if success?
+
+        psystem(stderr.strip) if opts[:print_stderr]
+        fail SystemCommandError.new(cmd, opts[:error]) if opts[:raise]
       end
 
       def success?
         @st.exitstatus == 0
       end
 
-      def =~(re)
-        (@stdout =~ re) || (@stderr =~ re)
+      def =~(other)
+        (@stdout =~ other) || (@stderr =~ other)
       end
 
       def default_options
         {
-          :print_stdout => false,
-          :print_stderr => false,
-          :raise => false,
-          :error => 'Command failed.',
+          print_stdout: false,
+          print_stderr: false,
+          raise: false,
+          error: 'Command failed.'
         }
       end
 
@@ -41,7 +41,7 @@ module MGit
 
         opts = Hash[
           default_options.map do |k, v|
-            [k, popen_opts.has_key?(k) ? popen_opts.delete(k) : v]
+            [k, popen_opts.key?(k) ? popen_opts.delete(k) : v]
           end
         ]
 
@@ -51,11 +51,9 @@ module MGit
 
     class GitCommand < SystemCommand
       def initialize(cmd, opts)
-        begin
-          super("git #{cmd}", opts)
-        rescue SystemCommandError => e
-          raise GitError.new(e.error)
-        end
+        super("git #{cmd}", opts)
+      rescue SystemCommandError => e
+        raise GitError, e.error
       end
     end
 

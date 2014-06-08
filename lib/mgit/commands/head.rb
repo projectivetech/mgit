@@ -1,9 +1,9 @@
 module MGit
   class HeadCommand < Command
-    def execute(args)
+    def execute(_)
       t = []
       Registry.each { |repo| t << [repo.name, repo.current_branch, repo.current_head] }
-      ptable t, :columns => [24, nil, nil]
+      ptable t, columns: [24, nil, nil]
     end
 
     def arity

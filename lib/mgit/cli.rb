@@ -3,12 +3,12 @@ module MGit
     include Output
 
     def start
-      raise NoCommandError if ARGV.size == 0
+      fail NoCommandError if ARGV.size == 0
 
       MGit.init
 
       # Run command, consuming its name from the list of arguments.
-      command = Command.execute(ARGV.shift, ARGV)
+      Command.execute(ARGV.shift, ARGV)
     rescue UsageError => e
       perror e.to_s
     rescue GitError => e

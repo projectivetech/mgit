@@ -27,24 +27,24 @@ module MGit
 
     register_command :show
 
-  private
+    private
 
     def repos
       @rs || begin
         @rs = []
         Registry.chdir_each do |r|
-          @rs << r if has_commit?
+          @rs << r if commit?
         end
         @rs
       end
     end
 
-    def has_commit?
-      !(System::git("rev-parse --quiet --verify #{@commit}").stdout.empty?)
+    def commit?
+      !(System.git("rev-parse --quiet --verify #{@commit}").stdout.empty?)
     end
 
     def show_commit(repo)
-      System::git("show #{@commit}", { :chdir => repo.path, :print_stdout => true } )
+      System.git("show #{@commit}", chdir: repo.path, print_stdout: true)
     end
 
     def show_menu

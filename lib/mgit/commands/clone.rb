@@ -1,8 +1,9 @@
 module MGit
   class CloneCommand < Command
     def execute(args)
-      log = System::git("clone #{args.join(' ')}", { :raise => true, :print_stderr => true }).stdout
-      
+      log = System.git("clone #{args.join(' ')}", raise: true, print_stderr: true)
+        .stdout
+
       m = /Cloning into '(.*)'/.match(log.split("\n").first)
       Command.execute('add', [m[1]])
     end
@@ -21,7 +22,7 @@ module MGit
 
     register_command :clone
 
-  private
+    private
 
     def option?(arg)
       arg.start_with?('-')

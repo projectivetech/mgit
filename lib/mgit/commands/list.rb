@@ -1,9 +1,9 @@
 module MGit
   class ListCommand < Command
-    def execute(args)
+    def execute(_)
       t = []
       Registry.each { |repo| t << [repo.name, repo.path] }
-      ptable t, :columns => [24, nil]
+      ptable t, columns: [24, nil]
     end
 
     def arity

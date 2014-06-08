@@ -6,9 +6,10 @@ module MGit
       Registry.each do |repo|
         pinfo "Executing command in repository #{repo.name}..."
 
-        sc = System::run(command, { :chdir => repo.path, :print_stdout => true, :print_stderr => true })
+        sc = System.run(command, chdir: repo.path, print_stdout: true, print_stderr: true)
+        next if sc.success?
 
-        if !sc.success? && !agree("Executing command '#{command}' in repository '#{repo.name}' failed. Would you like to continue anyway?".red)
+        unless agree("Executing command '#{command}' in repository '#{repo.name}' failed. Would you like to continue anyway?".red)
           break
         end
       end

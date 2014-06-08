@@ -2,10 +2,10 @@ require 'set'
 
 module MGit
   class StatusCommand < Command
-    def execute(args)
+    def execute(_)
       t = []
       Registry.chdir_each { |repo| t << [repo.name, repo.current_branch, decorate_flags(repo)] }
-      ptable t, :columns => [24, nil, nil]
+      ptable t, columns: [24, nil, nil]
     end
 
     def arity
@@ -23,7 +23,7 @@ module MGit
     register_command :status
     register_alias :st
 
-  private
+    private
 
     def decorate_flags(repo)
       flags = repo.flags
@@ -34,9 +34,9 @@ module MGit
     end
 
     def decorate_simple_flags(flags)
-      { :index => :red, :dirty => :red, :untracked => :yellow, :detached => :yellow }
-        .select { |f,_| flags.include?(f) }
-        .map { |f,c| f.to_s.capitalize.send(c) }
+      { index: :red, dirty: :red, untracked: :yellow, detached: :yellow }
+        .select { |f, _| flags.include?(f) }
+        .map { |f, c| f.to_s.capitalize.send(c) }
     end
 
     def decorate_divergence_flags(divergence)

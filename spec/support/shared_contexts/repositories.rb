@@ -11,8 +11,8 @@ shared_context 'managed_repository' do |state|
   state = [] unless state
   state = [state] unless state.is_a?(Array)
 
-  raise 'detached + dirty' if state.include?(:detached) && state.include?(:dirty)
-  raise 'detached + index' if state.include?(:detached) && state.include?(:index)
+  fail 'detached + dirty' if state.include?(:detached) && state.include?(:dirty)
+  fail 'detached + index' if state.include?(:detached) && state.include?(:index)
 
   before(:each) do
     @repo_name = 'managed'
@@ -71,7 +71,7 @@ shared_context 'tracking_repository' do |state|
   state = [state] unless state.is_a?(Array)
 
   before(:each) do
-    raise 'tracking repo needs managed repo' unless File.directory?(@repo_path)
+    fail 'tracking repo needs managed repo' unless File.directory?(@repo_path)
 
     @tracking_repo_name = 'tracking'
     @tracking_repo_path = File.join(@root, @tracking_repo_name)

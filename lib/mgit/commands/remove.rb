@@ -3,11 +3,11 @@ module MGit
     def execute(args)
       ptrn = args[0]
 
-      repo = Registry.find do |repo|
-        repo.name == ptrn || repo.path == File.expand_path(ptrn)
+      repo = Registry.find do |r|
+        r.name == ptrn || r.path == File.expand_path(ptrn)
       end
-      
-      raise CommandUsageError.new("Couldn't find repository matching '#{ptrn}'.", self) unless repo
+
+      fail CommandUsageError.new("Couldn't find repository matching '#{ptrn}'.", self) unless repo
 
       Registry.remove(repo.name)
       pinfo "Removed repository #{repo.name}."
