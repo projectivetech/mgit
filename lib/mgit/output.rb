@@ -20,7 +20,7 @@ module MGit
       print_to_screen TableOutputter.new(table, options).to_s
     end
 
-  private
+    private
 
     def print_to_screen(s)
       if Configuration.colors
@@ -37,7 +37,7 @@ module MGit
         @table = table
         @options = options
         @options[:columns] = []
-        raise ImplementationError.new('ptable called with invalid table') unless valid_table?
+        fail ImplementationError, 'ptable called with invalid table' unless valid_table?
       end
 
       def to_s
@@ -46,7 +46,7 @@ module MGit
         cw = column_widths
 
         table.map do |row|
-          row.map.with_index do |cell, i| 
+          row.map.with_index do |cell, i|
             # Only justify the column if it is not the last one.
             # This avoids too many line breaks.
             i < (columns - 1) ? justify(cell, cw[i]) : cell
@@ -54,7 +54,7 @@ module MGit
         end.join("\n")
       end
 
-    private
+      private
 
       def valid_table?
         table.empty? || table.all? { |c| c.is_a?(Array) && c.size == table.first.size }
@@ -73,7 +73,7 @@ module MGit
       end
 
       def column_widths
-        column_max_widths.each_with_index.map do |c, i| 
+        column_max_widths.each_with_index.map do |c, i|
           (options[:columns].size > i && options[:columns][i]) ? options[:columns][i] : c
         end
       end
@@ -85,7 +85,7 @@ module MGit
       end
 
       def justify(s, n)
-       (s.size > n) ? (s[0..(n - 3)] + '...') : s.ljust(n, ' ')
+        (s.size > n) ? (s[0..(n - 3)] + '...') : s.ljust(n, ' ')
       end
     end
   end

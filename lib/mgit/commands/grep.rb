@@ -5,7 +5,7 @@ module MGit
 
       Registry.each do |repo|
         pinfo "Looking for pattern '#{ptrn}' in repository #{repo.name}..."
-        System::git("grep #{ptrn}", { :chdir => repo.path, :print_stdout => true })
+        System.git("grep #{ptrn}", chdir: repo.path, print_stdout: true)
       end
     end
 

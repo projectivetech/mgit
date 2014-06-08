@@ -1,6 +1,6 @@
 module MGit
   class VersionCommand < Command
-    def execute(args)
+    def execute(_)
       pinfo "mgit version #{MGit::VERSION}"
     end
 
@@ -16,6 +16,6 @@ module MGit
       'display mgit version'
     end
 
-    register_command :version 
+    register_command :version
   end
 end

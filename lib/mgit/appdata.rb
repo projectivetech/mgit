@@ -3,7 +3,6 @@ require 'yaml'
 
 module MGit
   module AppData
-
     ####################
     # Module interface #
     ####################
@@ -29,27 +28,26 @@ module MGit
     #########################################
 
     class AppDataVersion
-      @@versions = []
-
       def self.inherited(version)
-        @@versions << version.new
+        @versions ||= []
+        @versions << version.new
         super
       end
 
       def self.sorted
-        @@versions.sort_by { |v| v.version }
+        @versions.sort_by { |v| v.version }
       end
 
       def self.updates
-        self.sorted.drop_while { |v| !v.active? }.drop(1)
+        sorted.drop_while { |v| !v.active? }.drop(1)
       end
 
       def self.active
-        self.sorted.find { |v| v.active? }
+        sorted.find { |v| v.active? }
       end
 
       def self.latest
-        self.sorted.last
+        sorted.last
       end
 
       include Comparable
@@ -60,7 +58,7 @@ module MGit
 
       [:version, :active?, :load, :save!, :migrate!].each do |meth|
         define_method(meth) do
-          raise ImplementationError.new("AppDataVersion #{self.class.name} doesn't implement the #{meth.to_s} method.")
+          fail ImplementationError, "AppDataVersion #{self.class.name} doesn't implement the #{meth} method."
         end
       end
     end
@@ -83,17 +81,17 @@ module MGit
       end
 
       def load(key, default)
-        raise ImplementationError.new("LegacyAppData::load called with unknown key #{key}.") if key != :repositories
+        fail ImplementationError, "LegacyAppData::load called with unknown key #{key}." if key != :repositories
         repos = YAML.load_file(repofile)
         repos ? repos : default
       end
 
       def save!(key, value)
-        raise ImplementationError.new("LegacyAppData::save! called with unknown key #{key}.") if key != :repositories
+        fail ImplementationError, "LegacyAppData::save! called with unknown key #{key}." if key != :repositories
         File.open(repofile, 'w') { |fd| fd.write value.to_yaml }
       end
 
-    private
+      private
 
       def repofile
         XDG['CONFIG_HOME'].to_path.join('mgit.yml')
@@ -118,7 +116,7 @@ module MGit
 
       def setup!
         FileUtils.mkdir_p(config_dir)
-        File.open(config_file, 'w') { |fd| fd.write ({ :version => '1' }.to_yaml) }
+        File.open(config_file, 'w') { |fd| fd.write({ version: '1' }.to_yaml) }
         FileUtils.touch(repo_file)
       end
 
@@ -129,9 +127,9 @@ module MGit
           repos ? repos : default
         when *Configuration::KEYS.keys, :version
           config = YAML.load_file(config_file)
-          (config && config.has_key?(key)) ? config[key] : default
+          (config && config.key?(key)) ? config[key] : default
         else
-          raise ImplementationError.new("AppDataVersion1::load called with unknown key #{key}.")
+          fail ImplementationError, "AppDataVersion1::load called with unknown key #{key}."
         end
       end
 
@@ -144,11 +142,11 @@ module MGit
           config[key] = value
           File.open(config_file, 'w') { |fd| fd.write config.to_yaml }
         else
-          raise ImplementationError.new("AppDataVersion1::save! called with unknown key #{key}.")
+          fail ImplementationError, "AppDataVersion1::save! called with unknown key #{key}."
         end
       end
 
-    private
+      private
 
       def config_dir
         XDG['CONFIG_HOME'].to_path.join('mgit')

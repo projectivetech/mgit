@@ -11,7 +11,7 @@ module MGit
     end
 
     def self.execute(name, args)
-      cmd = self.create(name)
+      cmd = create(name)
       cmd.check_arity(args)
       cmd.execute(args)
     end
@@ -35,18 +35,16 @@ module MGit
     end
 
     def check_arity(args)
-      arity_min, arity_max = self.arity
-      raise TooFewArgumentsError.new(self) if arity_min && args.size < arity_min
-      raise TooManyArgumentsError.new(self) if arity_max && args.size > arity_max
+      arity_min, arity_max = arity
+      fail TooFewArgumentsError, self if arity_min && args.size < arity_min
+      fail TooManyArgumentsError, self if arity_max && args.size > arity_max
     end
 
     [:arity, :usage, :help, :description].each do |meth|
       define_method(meth) do
-        raise ImplementationError.new("Command #{self.class.name} doesn't implement the #{meth.to_s} method.")
+        fail ImplementationError, "Command #{self.class.name} doesn't implement the #{meth} method."
       end
     end
-
-  private
 
     def self.create(cmd)
       cmd = cmd.downcase.to_sym
@@ -54,7 +52,7 @@ module MGit
       if klass
         klass.new
       else
-        raise UnknownCommandError.new(cmd)
+        fail UnknownCommandError, cmd
       end
     end
 

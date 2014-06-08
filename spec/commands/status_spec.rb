@@ -18,7 +18,7 @@ describe 'status command' do
 
   context 'with a clean repository' do
     include_context 'managed_repository'
-    
+
     it 'reports clean' do
       command.execute([])
       expect(@stdout.string).to match(/Clean/)

@@ -3,7 +3,7 @@ RSpec::Matchers.define :include_repository do |name, path|
     repos.any? { |r| r.name == name && r.path == path }
   end
 
-  failure_message_for_should do |repos|
+  failure_message do |repos|
     "expected #{repos.inspect} to include repository (#{name}, #{path})"
   end
 end

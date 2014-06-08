@@ -1,9 +1,7 @@
 module MGit
   class RemoveAllCommand < Command
-    def execute(args)
-      if agree('This will delete all repositories from mgit. Are you sure?'.red)
-        Registry.clean
-      end
+    def execute(_)
+      Registry.clean if agree('This will delete all repositories from mgit. Are you sure?'.red)
     end
 
     def arity

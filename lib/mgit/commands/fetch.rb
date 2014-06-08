@@ -2,10 +2,10 @@ require 'open3'
 
 module MGit
   class FetchCommand < Command
-    def execute(args)
+    def execute(_)
       thread_class = Configuration.threads ? Thread : NullThread
 
-      threads = Registry.collect do |repo|
+      threads = Registry.map do |repo|
         thread_class.new { fetch(repo) }
       end
 
@@ -26,18 +26,18 @@ module MGit
 
     register_command :fetch
 
-  private
+    private
 
     def fetch(repo)
-      sc = System::git('remote', :chdir => repo.path)
+      sc = System.git('remote', chdir: repo.path)
 
-      if !sc.success?
+      unless sc.success?
         perror "Failed to read remotes for repository #{repo.name}! Abort."
         return
       end
 
       sc.stdout.strip.split.each do |remote|
-        if System::git("fetch #{remote}", :chdir => repo.path).success?
+        if System.git("fetch #{remote}", chdir: repo.path).success?
           pinfo "Fetched #{remote} in repository #{repo.name}."
         else
           perror "Failed to fetch #{remote} in repository #{repo.name}! Abort."
