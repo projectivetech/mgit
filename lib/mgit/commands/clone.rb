@@ -25,11 +25,5 @@ module MGit
     end
 
     register_command :clone
-
-    private
-
-    def option?(arg)
-      arg.start_with?('-')
-    end
   end
 end
