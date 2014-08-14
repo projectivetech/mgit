@@ -120,7 +120,7 @@ module MGit
     end
 
     def dirty?
-      [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
+      [:index, :dirty].any? { |f| flags.include?(f) }
     end
 
     def in_repo
