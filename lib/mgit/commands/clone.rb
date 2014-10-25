@@ -1,10 +1,14 @@
 module MGit
   class CloneCommand < Command
     def execute(args)
-      log = System.git("clone #{args.join(' ')}", raise: true, print_stderr: true)
-        .stdout
+      log = System.git("clone #{args.join(' ')}", raise: true)
+      
+      m = [log.stdout, log.stderr].find do |l|
+        /Cloning into '(.*)'/.match(l.split("\n").first)
+      end
 
-      m = /Cloning into '(.*)'/.match(log.split("\n").first)
+      fail 'Failed to determine repository directory.' unless m
+      
       Command.execute('add', [m[1]])
     end
 
@@ -21,11 +25,5 @@ module MGit
     end
 
     register_command :clone
-
-    private
-
-    def option?(arg)
-      arg.start_with?('-')
-    end
   end
 end

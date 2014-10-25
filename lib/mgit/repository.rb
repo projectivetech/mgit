@@ -31,6 +31,17 @@ module MGit
       in_repo { System.git('rev-parse --verify --short HEAD').stdout.strip }
     end
 
+    def branches
+      in_repo do
+        System.git('branch --no-color')
+          .stdout
+          .strip
+          .split("\n")
+          .map { |b| b.split(' ') }
+          .map { |b| { name: b.last, current: (b.size == 2) } }
+      end
+    end
+
     def remote_tracking_branches(upstream_exists_only = true)
       rb = remote_branches
 
@@ -109,7 +120,7 @@ module MGit
     end
 
     def dirty?
-      [:index, :dirty, :untracked].any? { |f| flags.include?(f) }
+      [:index, :dirty].any? { |f| flags.include?(f) }
     end
 
     def in_repo
