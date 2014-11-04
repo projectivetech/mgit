@@ -28,6 +28,10 @@ module MGit
 
     private
 
+    def prune_switch
+      Configuration.prune ? '--prune' : ''
+    end
+
     def fetch(repo)
       sc = System.git('remote', chdir: repo.path)
 
@@ -37,7 +41,7 @@ module MGit
       end
 
       sc.stdout.strip.split.each do |remote|
-        if System.git("fetch #{remote}", chdir: repo.path).success?
+        if System.git("fetch #{prune_switch} #{remote}", chdir: repo.path).success?
           pinfo "Fetched #{remote} in repository #{repo.name}."
         else
           perror "Failed to fetch #{remote} in repository #{repo.name}! Abort."
