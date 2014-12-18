@@ -16,6 +16,11 @@ module MGit
       colors: {
         default: true,
         description: 'set to false to disable all colored output'
+      },
+
+      prune: {
+        default: true,
+        description: 'set to false to disable --prune for fetch command'
       }
     }
 
