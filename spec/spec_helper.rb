@@ -19,7 +19,7 @@ RSpec.configure do |config|
     # Stub the XDG home.
     class << @root
       def to_path
-        Pathname.new(self)
+        Pathname.new(dup)
       end
     end
     expect(XDG).to receive(:[]).at_least(:once).and_return(@root)

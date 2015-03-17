@@ -125,7 +125,7 @@ module MGit
         when :repositories
           repos = YAML.load_file(repo_file)
           repos ? repos : default
-        when *Configuration::KEYS.keys, :version
+        when :version, *Configuration::KEYS.keys
           config = YAML.load_file(config_file)
           (config && config.key?(key)) ? config[key] : default
         else
