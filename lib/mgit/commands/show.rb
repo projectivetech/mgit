@@ -30,17 +30,7 @@ module MGit
     private
 
     def repos
-      @rs || begin
-        @rs = []
-        Registry.chdir_each do |r|
-          @rs << r if commit?
-        end
-        @rs
-      end
-    end
-
-    def commit?
-      !(System.git("rev-parse --quiet --verify #{@commit}").stdout.empty?)
+      @rs ||= Registry.select { |r| r.has_commit?(@commit) }
     end
 
     def show_commit(repo)

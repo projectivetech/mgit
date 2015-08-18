@@ -31,6 +31,10 @@ module MGit
       in_repo { System.git('rev-parse --verify --short HEAD').stdout.strip }
     end
 
+    def has_commit?(obj)
+      in_repo { !(System.git("rev-parse --quiet --verify #{obj}").stdout.empty?) }
+    end
+
     def branches
       in_repo do
         System.git('branch --no-color')
