@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module MGit
   class GrepCommand < Command
     def execute(args)
@@ -5,7 +7,7 @@ module MGit
 
       Registry.each do |repo|
         pinfo "Looking for pattern '#{ptrn}' in repository #{repo.name}..."
-        System.git("grep #{ptrn}", chdir: repo.path, print_stdout: true)
+        System.git("grep '#{Shellwords.escape(ptrn)}'", chdir: repo.path, print_stdout: true)
       end
     end
 
