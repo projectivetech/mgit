@@ -1,6 +1,7 @@
 module MGit
   class CheckoutCommand < Command
     def execute(args)
+      @git_args = args.shift if args.length == 2
       @commit = args.shift
 
       if repos.empty?
@@ -11,11 +12,11 @@ module MGit
     end
 
     def arity
-      [1, 1]
+      [1, 2]
     end
 
     def usage
-      'checkout <commit-sha/obj>'
+      'checkout [additional git args] <commit-sha/obj>'
     end
 
     def description
@@ -39,7 +40,7 @@ module MGit
             next
           end
 
-          repo.in_repo { System.git("checkout -q #{@commit}") }
+          repo.in_repo { System.git("checkout -q #{@git_args || ''} #{@commit}") }
           pinfo "Switched to #{@commit} in repository #{repo.name}."
         rescue GitError
           perror "Failed to checkout #{@commit} in repository #{repo.name}."
